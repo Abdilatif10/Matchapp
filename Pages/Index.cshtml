@@ -1,0 +1,37 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Football Matches";
+}
+<h2>Fotbollsmatcher</h2>
+
+@if (Model.Matches != null && Model.Matches.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Hemmalag</th>
+                <th>Resultat</th>
+                <th>Borta lag</th>
+                <th>Datum</th>
+                <th>Liga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var match in Model.Matches)
+            {
+                <tr>
+                    <td> <img src="@match.homeTeam.crest" alt="@match.homeTeam.name logo" style="width: 30px; height: 30px;" /> @match.homeTeam.name</td>
+                    <td>@match.score.fullTime.home - @match.score.fullTime.away</td>
+                    <td> <img src="@match.awayTeam.crest" alt="@match.awayTeam.name logo" style="width: 30px; height: 30px;" /> @match.awayTeam.name</td>
+                    <td>@match.utcDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@match.competition.name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Inga matcher tillgängliga just nu.</p>
+}
