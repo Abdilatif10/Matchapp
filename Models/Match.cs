@@ -3,104 +3,78 @@ namespace SimpleApp.Models
 {
     public class FootballApiResponse
     {
-        public Filters filters { get; set; }
-        public ResultSet resultSet { get; set; }
-        public List<Match> matches { get; set; }
+        public Filters Filters { get; set; }
+        public ResultSet ResultSet { get; set; }
+        public List<Match> Matches { get; set; }
     }
 
     public class Filters
     {
-        public string dateFrom { get; set; }
-        public string dateTo { get; set; }
-        public string permission { get; set; }
+        public string DateFrom { get; set; }
+        public string DateTo { get; set; }
     }
 
     public class ResultSet
     {
-        public int count { get; set; }
-        public string competitions { get; set; }
-        public string first { get; set; }
-        public string last { get; set; }
-        public int played { get; set; }
+        public int Count { get; set; }
+        public string Competitions { get; set; }
+        public string First { get; set; }
+        public string Last { get; set; }
+        public int Played { get; set; }
     }
 
     public class Match
     {
-        public Area area { get; set; }
-        public Competition competition { get; set; }
-        public Season season { get; set; }
-        public int id { get; set; }
-        public DateTime utcDate { get; set; }
-        public string status { get; set; }
-        public int matchday { get; set; }
-        public string stage { get; set; }
-        public Team homeTeam { get; set; }
-        public Team awayTeam { get; set; }
-        public Score score { get; set; }
-        public List<Referee> referees { get; set; }
-    }
-
-    public class Area
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string code { get; set; }
-        public string flag { get; set; }
+        public Competition Competition { get; set; }
+        public Season Season { get; set; }
+        public int Id { get; set; }
+        public DateTime UtcDate { get; set; }
+        public string Status { get; set; }
+        public int Matchday { get; set; }
+        public Team HomeTeam { get; set; }
+        public Team AwayTeam { get; set; }
+        public Score Score { get; set; }
+        
     }
 
     public class Competition
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string code { get; set; }
-        public string type { get; set; }
-        public string emblem { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Emblem { get; set; }
     }
 
     public class Season
     {
-        public int id { get; set; }
-        public string startDate { get; set; }
-        public string endDate { get; set; }
-        public int currentMatchday { get; set; }
-        public string winner { get; set; }
+        public int Id { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public int CurrentMatchday { get; set; }
+        public string Winner { get; set; }
     }
 
     public class Team
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string shortName { get; set; }
-        public string tla { get; set; }
-        public string crest { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } // Använd Rename ändra omm alla variabler til stor bokstav. 
+        public string Crest { get; set; }
+
+        //Internal measurment strength skala 1-10 
+        public int HowGoodistheTeam { get; set; }  
     }
 
     public class Score
     {
-        public string winner { get; set; }
-        public string duration { get; set; }
-        public FullTime fullTime { get; set; }
-        public HalfTime halfTime { get; set; }
+        public string Winner { get; set; }
+        public string Duration { get; set; }
+        public FullTime FullTime { get; set; }
     }
 
     public class FullTime
     {
-        public int? home { get; set; }
-        public int? away { get; set; }
-    }
-
-    public class HalfTime
-    {
-        public int? home { get; set; }
-        public int? away { get; set; }
-    }
-
-    public class Referee
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string type { get; set; }
-        public string nationality { get; set; }
+        public int? Home { get; set; }
+        public int? Away { get; set; }
     }
 
 }

@@ -19,9 +19,9 @@ namespace SimpleApp.Pages
 
         public async Task OnGetAsync()
         {
-            string dateFrom = "2024-11-01"; // Exempel på startdatum
-            string dateTo = "2024-11-09";   // Exempel på slutdatum
-            var selectedLeagues = new List<string> { "PL" };
+            string dateFrom = "2024-11-22"; // Exempel på startdatum
+            string dateTo = "2024-11-25";   // Exempel på slutdatum
+            var selectedLeagues = new List<string> {"PL"};
             Matches = await _footballDataService.GetMatchesAsync(dateFrom, dateTo, selectedLeagues);
         }
         //test

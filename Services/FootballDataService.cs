@@ -12,7 +12,7 @@ namespace SimpleApp.Services
     {
         private readonly HttpClient _httpClient;
         private const string ApiUrl = "v4/matches";
-        private const string ApiKey = "";
+        private const string ApiKey = "328dbcfa6fc4408f9e7c8e9b7a8cc1c0";
 
         public FootballDataService(HttpClient httpClient)
         {
