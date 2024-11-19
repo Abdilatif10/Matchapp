@@ -1,0 +1,18 @@
+name: Example Workflow
+
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  matchapp-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code  
+        uses: actions/checkout@v3
+
+      - name: Use API Key
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+          # Now you can use $API_KEY in subsequent steps
