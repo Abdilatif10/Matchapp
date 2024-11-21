@@ -1,7 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
+using SimpleApp.Data;
+using SimpleApp.Models;
 using SimpleApp.Services;
 
 namespace SimpleApp
 {
+    
     public class Program
     {
         public static void Main(string[] args)
@@ -10,7 +16,16 @@ namespace SimpleApp
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-        
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+           .AddEntityFrameworkStores<ApplicationDbContext>()
+           .AddDefaultTokenProviders()
+           .AddDefaultUI();
+
+
             builder.Services.AddHttpClient<FootballDataService>();
             var app = builder.Build();
 
@@ -26,6 +41,7 @@ namespace SimpleApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -36,3 +52,4 @@ namespace SimpleApp
         }
     }
 }
+

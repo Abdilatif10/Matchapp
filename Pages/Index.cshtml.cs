@@ -23,6 +23,7 @@ namespace SimpleApp.Pages
             string dateTo = "2024-11-25";   // Exempel på slutdatum
             var selectedLeagues = new List<string> {"PL"};
             Matches = await _footballDataService.GetMatchesAsync(dateFrom, dateTo, selectedLeagues);
+            
         }
         //test
     }

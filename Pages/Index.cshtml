@@ -5,6 +5,8 @@
 }
 <h2>Fotbollsmatcher</h2>
 
+
+
 @if (Model.Matches != null && Model.Matches.Count > 0)
 {
     <table class="table">
@@ -24,7 +26,7 @@
                     <td> <img src="@match.HomeTeam.Crest" alt="@match.HomeTeam.Name logo" style="width: 30px; height: 30px;" /> @match.HomeTeam.Name</td>
                     <td>@match.Score.FullTime.Home - @match.Score.FullTime.Away</td>
                     <td> <img src="@match.AwayTeam.Crest" alt="@match.AwayTeam.Name logo" style="width: 30px; height: 30px;" /> @match.AwayTeam.Name</td>
-                    <td>@match.UtcDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@match.Date.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                     <td> <img src="@match.Competition.Emblem" style="width: 30px; height: 30px;"/></td>
                     <td>@match.Competition.Name</td>
                 </tr>
