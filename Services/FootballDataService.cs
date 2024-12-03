@@ -1,5 +1,4 @@
-﻿
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -21,6 +20,32 @@ namespace SimpleApp.Services
             _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", ApiKey);
             _httpClient.DefaultRequestHeaders.Add("X-Unfold-Goals", "true");
         }
+        public async Task<List<Team>> GetTeamsAsync()
+        {
+            string apiUrl = "v4/competitions/PL/teams"; 
+            HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseString = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<FootballApiResponse>(responseString);
+               
+                foreach (var team in data.Teams)
+                {
+                    team.TeamRatingScale = AssignTeamRating(team.Name);
+                }
+                return data.Teams;
+
+
+
+            }
+            else
+            {
+                Console.WriteLine($"API-anrop misslyckades med statuskod: {response.StatusCode}");
+                return new List<Team>();
+            }
+        }
+
 
         public async Task<List<Match>> GetMatchesAsync(string dateFrom, string dateTo, List<string> leagues)
         {
@@ -32,6 +57,15 @@ namespace SimpleApp.Services
             {
                 string responseString = await response.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<FootballApiResponse>(responseString);
+
+                // Uppdatera teamrating för varje match
+                foreach (var match in data.Matches)
+                {
+                    // Sätt teamrating för både hemmalag och bortalag
+                    match.HomeTeam.TeamRatingScale = AssignTeamRating(match.HomeTeam.Name);
+                    match.AwayTeam.TeamRatingScale = AssignTeamRating(match.AwayTeam.Name);
+                }
+
                 return data.Matches;
             }
             else
@@ -40,9 +74,37 @@ namespace SimpleApp.Services
                 return new List<Match>();
             }
         }
+        public int AssignTeamRating(string teamName)
+        {
+            return teamName switch
+            {
+                "Manchester City FC" => 10,
+                "Arsenal FC" => 9,
+                "Liverpool FC" => 10,
+                "Tottenham Hotspur FC" => 7,
+                "Newcastle United FC" => 6,
+                "Manchester United FC" => 7,
+                "Chelsea FC" => 7,
+                "Aston Villa FC" => 6,
+                "Brighton & Hove Albion FC" => 5,
+                "West Ham United FC" => 4,
+                "Brentford FC" => 4,
+                "Crystal Palace FC" => 2,
+                "Fulham FC" => 4,
+                "Wolverhampton Wanderers FC" => 3,
+                "Everton FC" => 3,
+                "Leicester City FC" => 3,
+                "Ipswich Town FC" => 2,
+                "Southampton FC" => 1,
+                "AFC Bournemouth" => 5,
+                "Nottingham Forest FC" => 4,
+
+            };
+        }
         public class FootballApiResponse
         {
             public List<Match> Matches { get; set; }
+            public List<Team> Teams { get; set; }
         }
 
     }

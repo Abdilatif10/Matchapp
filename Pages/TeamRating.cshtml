@@ -1,0 +1,37 @@
+﻿@page
+@model SimpleApp.Pages.TeamRatingModel
+@{
+    ViewData["Title"] = "TeamRating";
+}
+
+<h2>Fotbollslag</h2>
+
+@if (Model.Teams != null && Model.Teams.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Lag</th>
+                <th>Logga</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.Teams)
+            {
+                <tr>
+                    <td>@team.Name</td>
+                    <td> <img src="@team.Crest" alt="@team.Name logo" style="width: 30px; height: 30px;" /></td>
+                    <td>@team.TeamRatingScale</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Inga fotbollslags att visa.</p>
+}
+
+

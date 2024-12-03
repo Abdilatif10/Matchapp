@@ -2,10 +2,15 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Football Matches";
+    var selectedDate = Model.UtcDate.ToString("yyyy-MM-dd");
 }
-<h2>Fotbollsmatcher</h2>
+<h2>Fotbollsmatcher för @Model.UtcDate.ToString("yyyy-MM-dd")</h2>
 
-
+<form method="get">
+    <label for="datetime">Välj ett datum:</label>
+    <input type="date" id="datetime" name="datetime" value="@selectedDate" />
+    <button type="submit" class="btn btn-primary">Visa matcher</button>
+</form>
 
 @if (Model.Matches != null && Model.Matches.Count > 0)
 {
@@ -15,8 +20,10 @@
                 <th>Hemmalag</th>
                 <th>Resultat</th>
                 <th>Borta lag</th>
-                <th>Datum</th>
+                <th>Tid</th>
                 <th>Liga</th>
+                <th>Odds</th>
+               
             </tr>
         </thead>
         <tbody>
@@ -26,15 +33,23 @@
                     <td> <img src="@match.HomeTeam.Crest" alt="@match.HomeTeam.Name logo" style="width: 30px; height: 30px;" /> @match.HomeTeam.Name</td>
                     <td>@match.Score.FullTime.Home - @match.Score.FullTime.Away</td>
                     <td> <img src="@match.AwayTeam.Crest" alt="@match.AwayTeam.Name logo" style="width: 30px; height: 30px;" /> @match.AwayTeam.Name</td>
-                    <td>@match.Date.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
-                    <td> <img src="@match.Competition.Emblem" style="width: 30px; height: 30px;"/></td>
-                    <td>@match.Competition.Name</td>
+                    <td>@match.UtcDate.ToString("HH:mm")</td>
+                    <td> <img src="@match.Competition.Emblem" style="width: 50px; height: 50px;"/></td>
+                    <td>
+                       1: @match.Odds.HomeWin.ToString("F2") <br />
+                       X: @match.Odds.Draw.ToString("F2") <br />
+                       2: @match.Odds.AwayWin.ToString("F2")
+                    </td> 
                 </tr>
             }
         </tbody>
     </table>
 }
+
 else
 {
-    <p>Inga matcher tillgängliga just nu.</p>
+    <p>Inga matcher tillgängliga för det valda datumet.</p>
 }
+
+
+                 
