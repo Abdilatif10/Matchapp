@@ -29,3 +29,90 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+<style >
+.bet-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+}
+
+.team-info {
+    display: inline-block;
+    width: 25%;
+    text-align: center;
+}
+
+.team-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.team-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.score {
+    display: inline-block;
+    width: 10%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.match-details {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.odds {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+    .odds span {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+.bet-amount {
+    margin-top: 20px;
+}
+
+    .bet-amount input {
+        width: 100px;
+        padding: 5px;
+    }
+
+.bet-options {
+    margin-top: 20px;
+}
+
+    .bet-options label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+.place-bet-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+    .place-bet-btn:hover {
+        background-color: darkgreen;
+    }
+
+</style >

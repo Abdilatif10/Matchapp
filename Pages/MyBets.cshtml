@@ -1,9 +1,78 @@
 ﻿@page
-@model SimpleApp.Pages.MyBetsModel
+@model MyBetsModel
+
 @{
-    ViewData["Title"] = "My Bets";
+    ViewData["Title"] = "Placera Bet";
 }
 
-<h1>@ViewData["Title"]</h1>
+@if (Model.SelectedMatch != null)
+{
+    <div class="bet-container">
+        <h2>Placera Bet</h2>
 
-<p>Use this page to view your bets.</p>
+        <!-- Match Date and Competition -->
+        <div class="match-details">
+            <span><strong>Startid: </strong>@Model.SelectedMatch.UtcDate.ToString("HH:mm")</span>
+            <span>
+                <strong>Liga: </strong>
+                <img src="@Model.SelectedMatch.Competition?.Emblem" class="competition-logo" alt="Competition logo" />
+            </span>
+        </div>
+
+        <!-- Match information -->
+        <div class="match-info">
+            <div class="team-info">
+                <img src="@Model.SelectedMatch.HomeTeam?.Crest" alt="@Model.SelectedMatch.HomeTeam?.Name logo" class="team-logo" />
+                <span class="team-name">@Model.SelectedMatch.HomeTeam?.Name</span>
+            </div>
+
+            <div class="score">
+                <span>@Model.SelectedMatch.Score?.FullTime?.Home - @Model.SelectedMatch.Score?.FullTime?.Away</span>
+            </div>
+
+            <div class="team-info">
+                <img src="@Model.SelectedMatch.AwayTeam?.Crest" alt="@Model.SelectedMatch.AwayTeam?.Name logo" class="team-logo" />
+                <span class="team-name">@Model.SelectedMatch.AwayTeam?.Name</span>
+            </div>
+        </div>
+
+        <!-- Odds -->
+        <div class="odds">
+            <span><strong>1 (Hemmavinst): </strong>@Model.SelectedMatch.Odds?.HomeWin.ToString("F2")</span>
+            <span><strong>X (Oavgjort): </strong>@Model.SelectedMatch.Odds?.Draw.ToString("F2")</span>
+            <span><strong>2 (Bortavinst): </strong>@Model.SelectedMatch.Odds?.AwayWin.ToString("F2")</span>
+        </div>
+
+        <!-- Betting form -->
+        <form method="post" action="@Url.Page("/PlaceBet")">
+            <input type="hidden" name="matchId" value="@Model.SelectedMatch.Id" />
+           
+            <div class="bet-amount">
+                <label for="betAmount">Sätt poäng:</label>
+                <input type="number" id="betAmount" name="betAmount" min="1" max="100" required />
+                <span>Du har @(Model.SelectedMatch.User?.Points ?? 0) poäng</span>
+            </div>
+
+            <div class="bet-type">
+                <label>
+                    <input type="radio" name="betType" value="HomeWin" required />
+                    Hemma vinner
+                </label>
+                <label>
+                    <input type="radio" name="betType" value="Draw" />
+                    Oavgjort
+                </label>
+                <label>
+                    <input type="radio" name="betType" value="AwayWin" />
+                    Borta vinner
+                </label>
+            </div>
+
+            <button type="submit" class="place-bet-btn">Placera Bet</button>
+        </form>
+    </div>
+}
+else
+{
+    <p>Ingen match är vald eller tillgänglig.</p>
+}

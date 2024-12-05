@@ -11,7 +11,9 @@ namespace SimpleApp.Data
             : base(options)
         {
         }
-        
+        public DbSet<Bet> Bets { get; set; }   
+
+
 
 
     }

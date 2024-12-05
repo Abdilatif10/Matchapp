@@ -11,6 +11,7 @@ namespace SimpleApp.Models
         public Team AwayTeam { get; set; }
         public Score Score { get; set; }
         public Odds Odds { get; set; }
+        public User User { get; set; }
 
 
     }

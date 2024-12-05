@@ -4,6 +4,7 @@
     ViewData["Title"] = "Football Matches";
     var selectedDate = Model.UtcDate.ToString("yyyy-MM-dd");
 }
+
 <h2>Fotbollsmatcher för @Model.UtcDate.ToString("yyyy-MM-dd")</h2>
 
 <form method="get">
@@ -39,7 +40,15 @@
                        1: @match.Odds.HomeWin.ToString("F2") <br />
                        X: @match.Odds.Draw.ToString("F2") <br />
                        2: @match.Odds.AwayWin.ToString("F2")
-                    </td> 
+                    </td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <td>
+                            <a asp-page="/MyBets" asp-route-matchId="@match.Id" class="btn btn-success">
+                                Placera Bet
+                            </a>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

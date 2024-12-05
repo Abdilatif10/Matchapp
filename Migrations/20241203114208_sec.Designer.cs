@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SimpleApp.Data;
 
@@ -11,9 +12,11 @@ using SimpleApp.Data;
 namespace SimpleApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241203114208_sec")]
+    partial class sec
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,18 +169,9 @@ namespace SimpleApp.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("AwayWinOdds")
-                        .HasColumnType("float");
-
                     b.Property<string>("BetType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DrawOdds")
-                        .HasColumnType("float");
-
-                    b.Property<double>("HomeWinOdds")
-                        .HasColumnType("float");
 
                     b.Property<bool>("IsSettled")
                         .HasColumnType("bit");
@@ -185,8 +179,8 @@ namespace SimpleApp.Migrations
                     b.Property<int>("MatchId")
                         .HasColumnType("int");
 
-                    b.Property<double>("PotentialPayout")
-                        .HasColumnType("float");
+                    b.Property<decimal>("PotentialPayout")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
