@@ -22,14 +22,14 @@ namespace SimpleApp.Services
         }
         public async Task<List<Team>> GetTeamsAsync()
         {
-            string apiUrl = "v4/competitions/PL/teams"; 
+            string apiUrl = "v4/competitions/PL/teams";
             HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
             if (response.IsSuccessStatusCode)
             {
                 string responseString = await response.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<FootballApiResponse>(responseString);
-               
+
                 foreach (var team in data.Teams)
                 {
                     team.TeamRatingScale = AssignTeamRating(team.Name);
@@ -107,5 +107,35 @@ namespace SimpleApp.Services
             public List<Team> Teams { get; set; }
         }
 
+
+        public async Task<Match> GetMatchByIdAsync(int matchId)
+        {
+            var response = await _httpClient.GetAsync($"https://api.football-data.org/v4/matches/{matchId}");
+
+            // Logga statuskoden och svaret
+            Console.WriteLine($"API Status: {response.StatusCode}");
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Response: {content}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            try
+            {
+                var match = JsonConvert.DeserializeObject<Match>(content);
+                match.HomeTeam.TeamRatingScale = AssignTeamRating(match.HomeTeam.Name);
+                match.AwayTeam.TeamRatingScale = AssignTeamRating(match.AwayTeam.Name);
+                return match;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializing match: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }
+    

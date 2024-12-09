@@ -4,34 +4,35 @@
     ViewData["Title"] = "TeamRating";
 }
 
-<h2>Fotbollslag</h2>
+<h1 class="display-4 text-center my-4">@ViewData["Title"]</h1>
 
 @if (Model.Teams != null && Model.Teams.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Lag</th>
-                <th>Logga</th>
-                <th>Rating</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var team in Model.Teams)
-            {
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover table-sm">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@team.Name</td>
-                    <td> <img src="@team.Crest" alt="@team.Name logo" style="width: 30px; height: 30px;" /></td>
-                    <td>@team.TeamRatingScale</td>
-
+                    <th>#</th>
+                    <th>Lag</th>
+                    <th>Logga</th>
+                    <th>Rating</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var team in Model.Teams.Select((team, index) => new { team, index }))
+                {
+                    <tr>
+                        <td>@(team.index + 1)</td> <!-- Rangordning -->
+                        <td>@team.team.Name</td>
+                        <td><img src="@team.team.Crest" alt="@team.team.Name logo" style="width: 40px; height: 40px;" /></td>
+                        <td>@team.team.TeamRatingScale</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else
 {
-    <p>Inga fotbollslags att visa.</p>
+    <p class="text-center text-muted">Inga fotbollslags att visa.</p>
 }
-
-

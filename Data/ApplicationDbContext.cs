@@ -11,7 +11,14 @@ namespace SimpleApp.Data
             : base(options)
         {
         }
-        public DbSet<Bet> Bets { get; set; }   
+        public DbSet<Bet> Bets { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Om FullTime inte ska vara en databasentitet, gör den keyless
+            modelBuilder.Entity<FullTime>().HasNoKey(); 
+        }
 
 
 

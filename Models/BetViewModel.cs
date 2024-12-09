@@ -1,0 +1,8 @@
+﻿namespace SimpleApp.Models
+{
+    public class BetViewModel
+    {
+        public Bet Bet { get; set; }
+        public Match Match { get; set; }
+    }
+}
