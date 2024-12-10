@@ -13,10 +13,15 @@
     <div class="row">
         @foreach (var betViewModel in Model.UserBets.Where(bet => bet.Match.Status == "TIMED"))
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-5 mb-4">
                 <div class="card shadow-sm @GetCardBorderClass(betViewModel)">
                     <div class="card-body">
-                        <h5 class="card-title">@betViewModel.Match.HomeTeam.Name vs @betViewModel.Match.AwayTeam.Name</h5>
+                        <h5 class="card-title">
+                            <img src="@betViewModel.Match.HomeTeam.Crest" alt="@betViewModel.Match.HomeTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-right: 5px; vertical-align: middle;" />
+                            @betViewModel.Match.HomeTeam.Name vs
+                            <img src="@betViewModel.Match.AwayTeam.Crest" alt="@betViewModel.Match.AwayTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-left: 5px; vertical-align: middle;" />
+                            @betViewModel.Match.AwayTeam.Name
+                        </h5>
                         <p class="card-text"><strong>Insats:</strong> @betViewModel.Bet.Amount points</p>
                         <p class="card-text"><strong>Bettyp:</strong> @betViewModel.Bet.BetType</p>
                         <p class="card-text"><strong>Match Tid:</strong> @betViewModel.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
@@ -32,19 +37,24 @@
     <div class="row">
         @foreach (var betViewModel in Model.UserBets.Where(bet => bet.Match.Status == "FINISHED" || bet.Match.Status == "POSTPONED"))
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-5 mb-4">
                 <div class="card shadow-sm @GetCardBorderClass(betViewModel)">
                     <div class="card-body">
-                        <h5 class="card-title">@betViewModel.Match.HomeTeam.Name vs @betViewModel.Match.AwayTeam.Name</h5>
+                        <h5 class="card-title">
+                            <img src="@betViewModel.Match.HomeTeam.Crest" alt="@betViewModel.Match.HomeTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-right: 5px; vertical-align: middle;" />
+                            @betViewModel.Match.HomeTeam.Name vs
+                            <img src="@betViewModel.Match.AwayTeam.Crest" alt="@betViewModel.Match.AwayTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-left: 5px; vertical-align: middle;" />
+                            @betViewModel.Match.AwayTeam.Name
+                        </h5>
                         <p class="card-text"><strong>Insats:</strong> @betViewModel.Bet.Amount points</p>
                         <p class="card-text"><strong>Bettyp:</strong> @betViewModel.Bet.BetType</p>
                         <p class="card-text"><strong>Match Tid:</strong> @betViewModel.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
                         <p class="card-text"><strong>Möjlig utbetalning:</strong> @betViewModel.Bet.PotentialPayout points</p>
-                        <span class="badge @(betViewModel.Match.Status == "POSTPONED" ? "bg-warning" : (IsBetWon(betViewModel) ? "bg-success" : "bg-danger"))">
+                        <span class="badge @(betViewModel.Match.Status == "POSTPONED" ? "bg-warning" : (betViewModel.IsWon ? "bg-success" : "bg-danger"))">
                             @(betViewModel.Match.Status switch
                             {
                                 "POSTPONED" => "Uppskjuten",
-                                "FINISHED" => IsBetWon(betViewModel) ? "Vinst" : "Förlust",
+                                "FINISHED" => betViewModel.IsWon ? "Vinst" : "Förlust",
                                 _ => "Okänd"
                             })
                         </span>
@@ -60,32 +70,16 @@ else
 }
 
 @functions {
-  
     public string GetCardBorderClass(BetViewModel betViewModel)
     {
         if (betViewModel.Match.Status == "POSTPONED")
         {
-            return "border-warning"; 
+            return "border-warning";
         }
         if (betViewModel.Match.Status == "FINISHED")
         {
-            return IsBetWon(betViewModel) ? "border-success" : "border-danger"; 
+            return betViewModel.IsWon ? "border-success" : "border-danger";
         }
-        return "border-secondary"; 
-    }
-
- 
-    public bool IsBetWon(BetViewModel betViewModel)
-    {
-        var homeScore = betViewModel.Match.Score.FullTime.Home;
-        var awayScore = betViewModel.Match.Score.FullTime.Away;
-
-        return betViewModel.Bet.BetType switch
-        {
-            "HomeWin" => homeScore > awayScore,
-            "Draw" => homeScore == awayScore,
-            "AwayWin" => homeScore < awayScore,
-            _ => false
-        };
+        return "border-secondary";
     }
 }

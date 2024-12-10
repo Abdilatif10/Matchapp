@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.PointsToAnalysis;
 using SimpleApp.Data;
 using SimpleApp.Models;
 using SimpleApp.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SimpleApp.Pages
 {
@@ -31,7 +28,7 @@ namespace SimpleApp.Pages
             DateTime endDate = startDate.AddDays(1);
 
             // Hämta matcher för det valda datumet
-            var matches = await _footballDataService.GetMatchesAsync(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), new List<string> { "PL" });
+            var matches = await _footballDataService.GetMatchesAsync(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), new List<string> { "PL", "CL" });
 
             if (matches == null || !matches.Any())
             {
@@ -47,7 +44,7 @@ namespace SimpleApp.Pages
                 return NotFound();
             }
             DateTime localMatchTime = TimeZoneInfo.ConvertTimeFromUtc(SelectedMatch.UtcDate, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"));
-            SelectedMatch.UtcDate = localMatchTime; 
+            SelectedMatch.UtcDate = localMatchTime;
 
             // Beräkna odds för den valda matchen
             SelectedMatch.Odds = CalculateOdds(SelectedMatch.HomeTeam, SelectedMatch.AwayTeam);
@@ -134,6 +131,7 @@ namespace SimpleApp.Pages
             await _dbContext.SaveChangesAsync();
 
             // Uppdatera användarens poäng
+
             user.Points -= betAmount;
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
@@ -182,9 +180,9 @@ namespace SimpleApp.Pages
 
         }
     }
-
-    
 }
+
+
 
 
 

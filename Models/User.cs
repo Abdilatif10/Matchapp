@@ -11,7 +11,7 @@ namespace SimpleApp.Models
         [Required(ErrorMessage = "Födelsedatum är obligatoriskt.")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
-        public int? Points { get; set; } = 100; //Standardvärde
+        public double? Points { get; set; } = 100; //Standardvärde
 
        
 

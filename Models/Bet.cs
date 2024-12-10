@@ -12,7 +12,9 @@
         public double HomeWinOdds { get; set; }
         public double DrawOdds { get; set; }
         public double AwayWinOdds { get; set; }
-       
+        public bool IsPayoutDone { get; set; }
+
+
 
 
 

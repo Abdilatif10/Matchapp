@@ -34,7 +34,7 @@ namespace SimpleApp.Pages
             string dateTo = endDate.ToString("yyyy-MM-dd");
 
             // Hämta bara matcher från de valda ligorna
-            var selectedLeagues = new List<string> { "PL"};
+            var selectedLeagues = new List<string> {"PL","CL"};
             Matches = await _footballDataService.GetMatchesAsync(dateFrom, dateTo, selectedLeagues);
 
             // Konvertera matchtider och beräkna odds
@@ -73,6 +73,7 @@ namespace SimpleApp.Pages
             }
             else
             {   
+                // Om bortalaget är favoriten
                 return new Odds
                 {
                     HomeWin = 5.0,  

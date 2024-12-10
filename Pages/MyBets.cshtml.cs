@@ -55,17 +55,40 @@ namespace SimpleApp.Pages
                     var betViewModel = new BetViewModel
                     {
                         Bet = bet,
-                        Match = match
+                        Match = match,
+                        IsWon = IsBetWon(bet, match)
+
                     };
+                    if (match.Status == "FINISHED" && IsBetWon(bet, match) && !bet.IsPayoutDone)
+                    {
+                        user.Points += bet.PotentialPayout; 
+                        bet.IsPayoutDone = true; 
+                    }
+
 
                     betViewModels.Add(betViewModel);
                 }
             }
 
-           UserBets = betViewModels; 
+           UserBets = betViewModels;
+           await _dbContext.SaveChangesAsync();
 
             return Page();
         }
+        private bool IsBetWon(Bet bet, Match match)
+        {
+            var homeScore = match.Score.FullTime.Home;
+            var awayScore = match.Score.FullTime.Away;
+
+            return bet.BetType switch
+            {
+                "HomeWin" => homeScore > awayScore,
+                "Draw" => homeScore == awayScore,
+                "AwayWin" => homeScore < awayScore,
+                _ => false
+            };
+        }
+
 
 
 
