@@ -23,20 +23,20 @@ namespace SimpleApp.Pages
 
         public async Task<IActionResult> OnGetAsync(int matchId, DateTime? datetime)
         {
-            // Om inget datum skickas används dagens datum
+         
             DateTime startDate = datetime ?? DateTime.Now.Date;
             DateTime endDate = startDate.AddDays(1);
 
-            // Hämta matcher för det valda datumet
+            
             var matches = await _footballDataService.GetMatchesAsync(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), new List<string> { "PL", "CL" });
 
             if (matches == null || !matches.Any())
             {
                 TempData["Error"] = "Inga matcher hittades.";
-                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); // Skicka tillbaka valt datum
+                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); 
             }
 
-            // Hitta den valda matchen baserat på matchId
+         
             SelectedMatch = matches.FirstOrDefault(m => m.Id == matchId);
 
             if (SelectedMatch == null)
@@ -46,24 +46,24 @@ namespace SimpleApp.Pages
             DateTime localMatchTime = TimeZoneInfo.ConvertTimeFromUtc(SelectedMatch.UtcDate, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"));
             SelectedMatch.UtcDate = localMatchTime;
 
-            // Beräkna odds för den valda matchen
+           
             SelectedMatch.Odds = CalculateOdds(SelectedMatch.HomeTeam, SelectedMatch.AwayTeam);
 
-            // Kontrollera om matchen redan är spelad
+            
             if (SelectedMatch.UtcDate <= DateTime.UtcNow)
             {
                 TempData["Error"] = "Du kan inte lägga bet på en redan spelad match.";
-                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); // Skicka tillbaka valt datum
+                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); 
             }
 
-            // Associera användaren med matchen
+         
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
                 SelectedMatch.User = user;
             }
 
-            // Returnera sidan med valt datum (för att behålla sammanhanget)
+        
             ViewData["SelectedDate"] = startDate;
             return Page();
         }
@@ -92,10 +92,10 @@ namespace SimpleApp.Pages
                 return RedirectToPage("/Index");
             }
 
-            // Beräkna odds för matchen
+       
             var odds = CalculateOdds(SelectedMatch.HomeTeam, SelectedMatch.AwayTeam);
 
-            // Beräkna potentiell utbetalning beroende på bettypen
+            
             double potentialPayout = 0;
             switch (betType)
             {
@@ -113,14 +113,14 @@ namespace SimpleApp.Pages
                     return RedirectToPage("/MyBets");
             }
 
-            // Skapa och spara bet
+          
             var bet = new Bet
             {
                 UserId = user.Id,
                 MatchId = SelectedMatch.Id,
                 Amount = betAmount,
                 BetType = betType,
-                IsSettled = false, // Spelet är inte avgjort än
+                IsSettled = false, 
                 PotentialPayout = potentialPayout,
                 HomeWinOdds = odds.HomeWin,
                 DrawOdds = odds.Draw,
@@ -130,7 +130,7 @@ namespace SimpleApp.Pages
             _dbContext.Bets.Add(bet);
             await _dbContext.SaveChangesAsync();
 
-            // Uppdatera användarens poäng
+           
 
             user.Points -= betAmount;
             _dbContext.Users.Update(user);
@@ -145,7 +145,7 @@ namespace SimpleApp.Pages
 
             bool isHomeFavorite = homeTeam.TeamRatingScale > awayTeam.TeamRatingScale;
 
-            // Om det är en jämn match
+          
             if (Math.Abs(homeTeam.TeamRatingScale - awayTeam.TeamRatingScale) <= 1)
             {
                 return new Odds
@@ -156,7 +156,7 @@ namespace SimpleApp.Pages
                 };
             }
 
-            // Om hemmalaget är favoriten
+     
             if (isHomeFavorite)
             {
                 return new Odds

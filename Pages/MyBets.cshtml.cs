@@ -31,18 +31,18 @@ namespace SimpleApp.Pages
                 return RedirectToPage("/Index");
             }
 
-            // Hämta alla bets för användaren
+          
             var userBets = await _dbContext.Bets
                 .Where(b => b.UserId == user.Id)
                 .ToListAsync();
             
 
-            // Skapa en lista med BetViewModels
+           
             List<BetViewModel> betViewModels = new List<BetViewModel>();
 
             foreach (var bet in userBets)
             {
-                var match = await _footballDataService.GetMatchByIdAsync(bet.MatchId); // Hämtar matchdata baserat på MatchId
+                var match = await _footballDataService.GetMatchByIdAsync(bet.MatchId); 
                 if (match == null)
                 {
                     Console.WriteLine($"Matchen med ID {bet.MatchId} kunde inte hämtas.");
@@ -51,7 +51,7 @@ namespace SimpleApp.Pages
 
                 if (match != null)
                 {
-                    // Fyll i BetViewModel med Bet och Match
+                    
                     var betViewModel = new BetViewModel
                     {
                         Bet = bet,

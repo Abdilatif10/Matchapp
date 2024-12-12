@@ -21,9 +21,9 @@ namespace SimpleApp.Pages
 
         public async Task OnGetAsync()
         {
-            // Hämta alla användare med deras poäng från databasen
+           
             Users = await _dbContext.Users
-                .OrderByDescending(u => u.Points)  // Sortera användarna efter poäng
+                .OrderByDescending(u => u.Points)  
                 .ToListAsync();
         }
     }

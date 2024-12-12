@@ -1,5 +1,5 @@
 ﻿@page
-@using SimpleApp.Models;
+@using SimpleApp.Models
 @model MyBetsModel
 @{
     ViewData["Title"] = "Mina Bets";
@@ -7,25 +7,34 @@
 
 <h2 class="mb-4">Dina Lagda Bets</h2>
 
-@if (Model.UserBets != null && Model.UserBets.Any())
+@if (Model.UserBets?.Any() != true)
 {
+    <p class="text-muted">Du har inte lagt några bets än.</p>
+    return;
+}
+
+<div class="container">
+  
     <h3 class="mb-3">Aktiva Bets</h3>
     <div class="row">
-        @foreach (var betViewModel in Model.UserBets.Where(bet => bet.Match.Status == "TIMED"))
+        @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "TIMED"))
         {
-            <div class="col-md-5 mb-4">
-                <div class="card shadow-sm @GetCardBorderClass(betViewModel)">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <img src="@betViewModel.Match.HomeTeam.Crest" alt="@betViewModel.Match.HomeTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-right: 5px; vertical-align: middle;" />
-                            @betViewModel.Match.HomeTeam.Name vs
-                            <img src="@betViewModel.Match.AwayTeam.Crest" alt="@betViewModel.Match.AwayTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-left: 5px; vertical-align: middle;" />
-                            @betViewModel.Match.AwayTeam.Name
+      
+                        <h5 class="card-title d-flex align-items-center">
+                            <img src="@bet.Match.HomeTeam.Crest" alt="home" class="team-logo" style="width: 30px; height: 30px;" />
+                            <span class="mx-2">@bet.Match.HomeTeam.Name vs @bet.Match.AwayTeam.Name</span>
+                            <img src="@bet.Match.AwayTeam.Crest" alt="away" class="team-logo" style="width: 30px; height: 30px;" />
                         </h5>
-                        <p class="card-text"><strong>Insats:</strong> @betViewModel.Bet.Amount points</p>
-                        <p class="card-text"><strong>Bettyp:</strong> @betViewModel.Bet.BetType</p>
-                        <p class="card-text"><strong>Match Tid:</strong> @betViewModel.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
-                        <p class="card-text"><strong>Möjlig utbetalning:</strong> @betViewModel.Bet.PotentialPayout points</p>
+
+                       
+                        <p><strong>Insats:</strong> @bet.Bet.Amount points</p>
+                        <p><strong>Bettyp:</strong> @bet.Bet.BetType</p>
+                        <p><strong>Odds:</strong> @GetOdds(bet)</p>
+                        <p><strong>Match Tid:</strong> @bet.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
+                        <p><strong>Möjlig utbetalning:</strong> @bet.Bet.PotentialPayout points</p>
                         <span class="badge bg-primary">Planerad</span>
                     </div>
                 </div>
@@ -35,51 +44,49 @@
 
     <h3 class="mt-5 mb-3">Avgjorda Bets</h3>
     <div class="row">
-        @foreach (var betViewModel in Model.UserBets.Where(bet => bet.Match.Status == "FINISHED" || bet.Match.Status == "POSTPONED"))
+        @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "FINISHED" || b.Match.Status == "POSTPONED"))
         {
-            <div class="col-md-5 mb-4">
-                <div class="card shadow-sm @GetCardBorderClass(betViewModel)">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm @(bet.IsWon ? "border-success" : "border-danger")">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            <img src="@betViewModel.Match.HomeTeam.Crest" alt="@betViewModel.Match.HomeTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-right: 5px; vertical-align: middle;" />
-                            @betViewModel.Match.HomeTeam.Name vs
-                            <img src="@betViewModel.Match.AwayTeam.Crest" alt="@betViewModel.Match.AwayTeam.Name logo" class="team-logo" style="width: 30px; height: 30px; margin-left: 5px; vertical-align: middle;" />
-                            @betViewModel.Match.AwayTeam.Name
+                       
+                        <h5 class="card-title d-flex align-items-center">
+                            <img src="@bet.Match.HomeTeam.Crest" alt="home" class="team-logo" style="width: 30px; height: 30px;" />
+                            <span class="mx-2">@bet.Match.HomeTeam.Name vs @bet.Match.AwayTeam.Name</span>
+                            <img src="@bet.Match.AwayTeam.Crest" alt="away" class="team-logo" style="width: 30px; height: 30px;" />
                         </h5>
-                        <p class="card-text"><strong>Insats:</strong> @betViewModel.Bet.Amount points</p>
-                        <p class="card-text"><strong>Bettyp:</strong> @betViewModel.Bet.BetType</p>
-                        <p class="card-text"><strong>Match Tid:</strong> @betViewModel.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
-                        <p class="card-text"><strong>Möjlig utbetalning:</strong> @betViewModel.Bet.PotentialPayout points</p>
-                        <span class="badge @(betViewModel.Match.Status == "POSTPONED" ? "bg-warning" : (betViewModel.IsWon ? "bg-success" : "bg-danger"))">
-                            @(betViewModel.Match.Status switch
-                            {
-                                "POSTPONED" => "Uppskjuten",
-                                "FINISHED" => betViewModel.IsWon ? "Vinst" : "Förlust",
-                                _ => "Okänd"
-                            })
-                        </span>
+
+           
+                        <p><strong>Insats:</strong> @bet.Bet.Amount points</p>
+                        <p><strong>Bettyp:</strong> @bet.Bet.BetType</p>
+                        <p><strong>Match Tid:</strong> @bet.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
+                        <p><strong>Möjlig utbetalning:</strong> @bet.Bet.PotentialPayout points</p>
+
+                        @if (bet.Match.Status == "POSTPONED")
+                        {
+                            <span class="badge bg-warning">Uppskjuten</span>
+                        }
+                        else
+                        {
+                            <span class="badge @(bet.IsWon ? "bg-success" : "bg-danger")">
+                                @(bet.IsWon ? "Vinst" : "Förlust")
+                            </span>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
-}
-else
-{
-    <p class="text-muted">Du har inte lagt några bets än.</p>
-}
+</div>
 
 @functions {
-    public string GetCardBorderClass(BetViewModel betViewModel)
+    private string GetOdds(BetViewModel bet)
     {
-        if (betViewModel.Match.Status == "POSTPONED")
+        return bet.Bet.BetType switch
         {
-            return "border-warning";
-        }
-        if (betViewModel.Match.Status == "FINISHED")
-        {
-            return betViewModel.IsWon ? "border-success" : "border-danger";
-        }
-        return "border-secondary";
+            "HomeWin" => bet.Bet.HomeWinOdds.ToString("F2"),
+            "AwayWin" => bet.Bet.AwayWinOdds.ToString("F2"),
+            _ => bet.Bet.DrawOdds.ToString("F2")
+        };
     }
 }

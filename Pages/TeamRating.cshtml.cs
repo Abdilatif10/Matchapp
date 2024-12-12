@@ -17,7 +17,7 @@ namespace SimpleApp.Pages
         }
         public async Task OnGetAsync()
         {
-            // Antag att du har en metod som hämtar rating för alla lag
+            
             Teams = await _footballDataService.GetTeamsAsync();
         }
 

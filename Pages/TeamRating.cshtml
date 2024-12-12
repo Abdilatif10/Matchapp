@@ -22,7 +22,7 @@
                 @foreach (var team in Model.Teams.Select((team, index) => new { team, index }))
                 {
                     <tr>
-                        <td>@(team.index + 1)</td> <!-- Rangordning -->
+                        <td>@(team.index + 1)</td> 
                         <td>@team.team.Name</td>
                         <td><img src="@team.team.Crest" alt="@team.team.Name logo" style="width: 40px; height: 40px;" /></td>
                         <td>@team.team.TeamRatingScale</td>
