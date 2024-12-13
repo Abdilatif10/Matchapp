@@ -1,18 +1,47 @@
-name: Example Workflow
+name: Test Workflow
 
 on:
   push:
     branches:
-      - main 
+      - main
+
 jobs:
   matchapp-job:
     runs-on: ubuntu-latest
 
     steps:
+   
       - name: Checkout code  
         uses: actions/checkout@v3
+
+   
+      - name: Set up .NET 9
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0'  
+
+    
+      - name: Install dependencies
+        run: |
+          dotnet restore  # Restores the dependencies for .NET project
+
+   
+      - name: Run Tests
+        run: |
+          dotnet test  # Runs unit tests for the .NET project
+
 
       - name: Use API Key
         run: |
           echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
-          # Now you can use $API_KEY in subsequent steps
+          # The API key is now securely available as an environment variable ($API_KEY)
+
+    
+      - name: Run Application (Optional)
+        run: |
+          dotnet run  # Runs the application (Modify for other steps)
+
+   
+      - name: Publish application (optional)
+        run: |
+          dotnet publish -c Release -o out  # Publish .NET app to 'out' directory
