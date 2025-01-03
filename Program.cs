@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using SimpleApp.Data;
 using SimpleApp.Models;
 using SimpleApp.Services;
@@ -10,7 +9,7 @@ namespace SimpleApp
     
     public class Program
     {
-        public static void Main(string[] args)
+      public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 

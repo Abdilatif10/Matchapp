@@ -22,22 +22,22 @@ namespace SimpleApp.Pages
 
         public async Task OnGetAsync(DateTime? datetime)
         {
-            
+
             DateTime startDate = datetime ?? DateTime.Now.Date;
 
-       
+
             UtcDate = startDate;
 
-           
+
             DateTime endDate = startDate.AddDays(1);
             string dateFrom = startDate.ToString("yyyy-MM-dd");
             string dateTo = endDate.ToString("yyyy-MM-dd");
 
-      
-            var selectedLeagues = new List<string> {"PL","CL"};
+
+            var selectedLeagues = new List<string> { "PL", "CL" };
             Matches = await _footballDataService.GetMatchesAsync(dateFrom, dateTo, selectedLeagues);
 
-          
+
             foreach (var match in Matches)
             {
                 match.UtcDate = TimeZoneInfo.ConvertTimeFromUtc(match.UtcDate, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"));
@@ -47,10 +47,10 @@ namespace SimpleApp.Pages
 
         public Odds CalculateOdds(Team homeTeam, Team awayTeam)
         {
-            
+
             bool isHomeFavorite = homeTeam.TeamRatingScale > awayTeam.TeamRatingScale;
 
-        
+
             if (Math.Abs(homeTeam.TeamRatingScale - awayTeam.TeamRatingScale) <= 1)
             {
                 return new Odds
@@ -61,34 +61,31 @@ namespace SimpleApp.Pages
                 };
             }
 
-  
+
             if (isHomeFavorite)
             {
                 return new Odds
                 {
-                    HomeWin = 2.0,  
+                    HomeWin = 2.0,
                     Draw = 3.0,
-                    AwayWin = 5.0   
+                    AwayWin = 5.0
                 };
             }
             else
-            {   
-             
+            {
+
                 return new Odds
                 {
-                    HomeWin = 5.0,  
+                    HomeWin = 5.0,
                     Draw = 4.0,
-                    AwayWin = 3.0   
+                    AwayWin = 3.0
                 };
             }
-            
-    
         }
-        
-
-
     }
 }
+    
+      
 
     
 
