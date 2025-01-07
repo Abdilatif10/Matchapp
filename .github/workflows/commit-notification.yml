@@ -1,0 +1,29 @@
+name: Commit notification to Discord
+
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    branches:
+      - main  
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Notify Discord on commit
+        uses: Ilshidur/action-discord@master
+        with:
+          args: >-
+            📥 **New Commit!**
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        env:
+          DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1326208422198120468/ixbXKv9FPc8EJ5Z-tBKx0FVKwLwCOiLZLpzLiyIRTrKIVyKMT5zJtIkzxtATc1Eo_L11"
