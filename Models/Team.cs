@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
         public string Crest { get; set; }
         public int TeamRatingScale { get; set; }
     }
@@ -16,7 +17,9 @@
     // {home.TeamRatingScale = favouriteTeam
     // = ge odds för favoruiteteam }
 
-    //Test2
-    
+    //Den här kommentaren är för att testa att jag kan kommentera och se namnet på commiten istället för hashen.
+
+
+
 }
 
