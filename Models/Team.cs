@@ -16,6 +16,7 @@
     // {home.TeamRatingScale = favouriteTeam
     // = ge odds för favoruiteteam }
 
-    //Test
+    //Test2
+    
 }
 
