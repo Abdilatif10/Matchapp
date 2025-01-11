@@ -15,5 +15,7 @@
     // if(homeTeam.TeamRatingScale > awayTeam.TeamRatingScale)
     // {home.TeamRatingScale = favouriteTeam
     // = ge odds för favoruiteteam }
+
+    //Test
 }
 
