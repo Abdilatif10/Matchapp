@@ -23,7 +23,7 @@ jobs:
             📥 **New Commit!**
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
-            Commit: ${{ github.sha }}
+            Commit Message: ${{ github.event.head_commit.message }}
             [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
         env:
           DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1326208422198120468/ixbXKv9FPc8EJ5Z-tBKx0FVKwLwCOiLZLpzLiyIRTrKIVyKMT5zJtIkzxtATc1Eo_L11"
