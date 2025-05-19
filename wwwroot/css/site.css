@@ -18,7 +18,246 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #2c1144;
+  color: white;
+}
+
+.premier-league-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.premier-league-title {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.search-container {
+  margin-bottom: 2rem;
+}
+
+.team-search {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1.1rem;
+}
+
+.team-search::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.content-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, background-color 0.2s;
+  cursor: pointer;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.team-card.selected {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #9c27b0;
+}
+
+.team-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+}
+
+.team-logo-small {
+  width: 40px;
+  height: 40px;
+}
+
+.team-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  color: white;
+}
+
+.team-rating {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.rating-high { background-color: #4caf50; }
+.rating-medium { background-color: #ff9800; }
+.rating-average { background-color: #ffc107; }
+.rating-low { background-color: #f44336; }
+
+.matches-panel {
+  flex-basis: 400px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  height: fit-content;
+}
+
+.matches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.date-picker {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.match-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.match-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.match-time {
+  text-align: center;
+}
+
+.time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #9c27b0;
+}
+
+.date {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.competition {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.competition-logo {
+  width: 24px;
+  height: 24px;
+}
+
+.odds-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.odds {
+  display: flex;
+  gap: 1rem;
+}
+
+.odds-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.odds-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.odds-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #9c27b0;
+}
+
+.bet-button {
+  background: #9c27b0;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.bet-button:hover {
+  background: #7b1fa2;
+  color: white;
+  text-decoration: none;
+}
+
+.bet-button.login-required {
+  background: #616161;
+}
+
+.bet-button.login-required:hover {
+  background: #424242;
+}
+
+.no-matches {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 1200px) {
+  .content-container {
+    flex-direction: column;
+  }
+  
+  .matches-panel {
+    flex-basis: auto;
+  }
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -29,111 +268,110 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-<style >
+
 .bet-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
 }
 
 .team-info {
-    display: inline-block;
-    width: 25%;
-    text-align: center;
+  display: inline-block;
+  width: 25%;
+  text-align: center;
 }
 
 .team-logo {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
 }
 
 .team-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .score {
-    display: inline-block;
-    width: 10%;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
+  display: inline-block;
+  width: 10%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .match-details {
-    margin-top: 20px;
-    font-size: 16px;
+  margin-top: 20px;
+  font-size: 16px;
 }
 
 .odds {
-    margin-top: 20px;
-    font-size: 16px;
-    font-weight: bold;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-    .odds span {
-        display: block;
-        margin-bottom: 10px;
-    }
+.odds span {
+  display: block;
+  margin-bottom: 10px;
+}
 
 .bet-amount {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
-    .bet-amount input {
-        width: 100px;
-        padding: 5px;
-    }
+.bet-amount input {
+  width: 100px;
+  padding: 5px;
+}
 
 .bet-options {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
-    .bet-options label {
-        display: block;
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
+.bet-options label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
 
 .place-bet-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    margin-top: 20px;
-    cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  margin-top: 20px;
+  cursor: pointer;
 }
 
-    .place-bet-btn:hover {
-        background-color: darkgreen;
-    }
+.place-bet-btn:hover {
+  background-color: darkgreen;
+}
 
 .cookie-notice {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 14px;
-    z-index: 1000;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  z-index: 1000;
 }
 
-    .cookie-notice button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-</style>
+.cookie-notice button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}

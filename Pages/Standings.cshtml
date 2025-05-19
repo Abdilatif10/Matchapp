@@ -1,0 +1,62 @@
+@page
+@model SimpleApp.Pages.StandingsModel
+@{
+    ViewData["Title"] = "Premier League Standings";
+}
+
+<h1 class="display-4 text-center my-4">Premier League Table</h1>
+
+@if (Model.Standings != null && Model.Standings.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr class="bg-primary text-white">
+                    <th class="text-center" scope="col">Pos</th>
+                    <th scope="col">Club</th>
+                    <th class="text-center" scope="col">MP</th>
+                    <th class="text-center" scope="col">W</th>
+                    <th class="text-center" scope="col">D</th>
+                    <th class="text-center" scope="col">L</th>
+                    <th class="text-center" scope="col">GF</th>
+                    <th class="text-center" scope="col">GA</th>
+                    <th class="text-center" scope="col">GD</th>
+                    <th class="text-center" scope="col">Pts</th>
+                    <th class="text-center" scope="col">Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var team in Model.Standings)
+                {
+                    <tr>
+                        <td class="text-center">@team.Position</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                @if (!string.IsNullOrEmpty(team.Team?.Crest))
+                                {
+                                    <img src="@team.Team.Crest" alt="@team.Team.Name logo" style="width: 24px; height: 24px; margin-right: 8px;" />
+                                }
+                                @team.Team?.Name
+                            </div>
+                        </td>
+                        <td class="text-center">@team.PlayedGames</td>
+                        <td class="text-center">@team.Won</td>
+                        <td class="text-center">@team.Draw</td>
+                        <td class="text-center">@team.Lost</td>
+                        <td class="text-center">@team.GoalsFor</td>
+                        <td class="text-center">@team.GoalsAgainst</td>
+                        <td class="text-center">@team.GoalDifference</td>
+                        <td class="text-center"><strong>@team.Points</strong></td>
+                        <td class="text-center">@(team.Team?.TeamRatingScale ?? 0)/10</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        No standings data available at the moment.
+    </div>
+}

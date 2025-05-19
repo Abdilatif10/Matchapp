@@ -6,13 +6,19 @@ using SimpleApp.Models;
 using SimpleApp.Services;
 
 namespace SimpleApp.Pages
-{
+{    
     public class PlaceBetModel : PageModel
     {
         private readonly FootballDataService _footballDataService;
         private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _dbContext;
-        public Match SelectedMatch { get; set; }
+        public Match? SelectedMatch { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int MatchId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? Datetime { get; set; }
 
         public PlaceBetModel(FootballDataService footballDataService, UserManager<User> userManager, ApplicationDbContext dbContext)
         {
@@ -21,49 +27,44 @@ namespace SimpleApp.Pages
             _dbContext = dbContext;
         }
 
-        public async Task<IActionResult> OnGetAsync(int matchId, DateTime? datetime)
+        public async Task<IActionResult> OnGetAsync()
         {
-         
-            DateTime startDate = datetime ?? DateTime.Now.Date;
+            if (MatchId == 0)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            DateTime startDate = !string.IsNullOrEmpty(Datetime) ? DateTime.Parse(Datetime) : DateTime.Now.Date;
             DateTime endDate = startDate.AddDays(1);
 
+            var match = await _footballDataService.GetMatchByIdAsync(MatchId);
             
-            var matches = await _footballDataService.GetMatchesAsync(startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"), new List<string> { "PL", "CL" });
-
-            if (matches == null || !matches.Any())
+            if (match == null)
             {
-                TempData["Error"] = "Inga matcher hittades.";
-                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); 
+                TempData["Error"] = "Match not found.";
+                return RedirectToPage("/Index");
             }
 
-         
-            SelectedMatch = matches.FirstOrDefault(m => m.Id == matchId);
-
-            if (SelectedMatch == null)
-            {
-                return NotFound();
-            }
-            DateTime localMatchTime = TimeZoneInfo.ConvertTimeFromUtc(SelectedMatch.UtcDate, TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"));
-            SelectedMatch.UtcDate = localMatchTime;
-
-           
-            SelectedMatch.Odds = CalculateOdds(SelectedMatch.HomeTeam, SelectedMatch.AwayTeam);
-
+            SelectedMatch = match;
             
-            if (SelectedMatch.UtcDate <= DateTime.UtcNow)
+            // Convert UTC time to local time
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            SelectedMatch.UtcDate = TimeZoneInfo.ConvertTimeFromUtc(SelectedMatch.UtcDate, timezone);
+
+            // Check if match has already started
+            if (SelectedMatch.UtcDate <= DateTime.Now)
             {
-                TempData["Error"] = "Du kan inte lägga bet på en redan spelad match.";
-                return RedirectToPage("/Index", new { datetime = startDate.ToString("yyyy-MM-dd") }); 
+                TempData["Error"] = "Cannot place bets on matches that have already started.";
+                return RedirectToPage("/Index");
             }
 
-         
+            // Get current user
             var user = await _userManager.GetUserAsync(User);
-            if (user != null)
+            if (user == null)
             {
-                SelectedMatch.User = user;
+                return RedirectToPage("/Identity/Account/Login");
             }
 
-        
             ViewData["SelectedDate"] = startDate;
             return Page();
         }
@@ -82,13 +83,13 @@ namespace SimpleApp.Pages
 
             if (betAmount > user.Points)
             {
-                TempData["Error"] = "Du har inte tillräckligt med poäng.";
+                TempData["Error"] = "Du har inte tillrï¿½ckligt med poï¿½ng.";
                 return RedirectToPage("/MyBets");
             }
 
             if (SelectedMatch?.UtcDate <= DateTime.UtcNow)
             {
-                TempData["Error"] = "Du kan inte lägga bet på en redan spelad match.";
+                TempData["Error"] = "Du kan inte lï¿½gga bet pï¿½ en redan spelad match.";
                 return RedirectToPage("/Index");
             }
 
@@ -136,7 +137,7 @@ namespace SimpleApp.Pages
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
 
-            TempData["Success"] = "Ditt bet är lagt!";
+            TempData["Success"] = "Ditt bet ï¿½r lagt!";
             return RedirectToPage("/MyBets");
         }
 
