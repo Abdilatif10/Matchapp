@@ -19,9 +19,10 @@ namespace SimpleApp.Pages
             _footballDataService = footballDataService;
             _userManager = userManager;
             _dbContext = dbContext;
-        }
-
-        public List<BetViewModel> UserBets { get; set; }
+        }        public List<BetViewModel> ActiveBets { get; set; } = new();
+        public List<BetViewModel> CompletedBets { get; set; } = new();
+        public double UserPoints { get; set; }
+        public List<BetViewModel> UserBets { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -31,13 +32,12 @@ namespace SimpleApp.Pages
                 return RedirectToPage("/Index");
             }
 
+            UserPoints = user.Points ?? 0;
           
             var userBets = await _dbContext.Bets
                 .Where(b => b.UserId == user.Id)
                 .ToListAsync();
             
-
-           
             List<BetViewModel> betViewModels = new List<BetViewModel>();
 
             foreach (var bet in userBets)
@@ -45,36 +45,34 @@ namespace SimpleApp.Pages
                 var match = await _footballDataService.GetMatchByIdAsync(bet.MatchId); 
                 if (match == null)
                 {
-                    Console.WriteLine($"Matchen med ID {bet.MatchId} kunde inte hämtas.");
+                    Console.WriteLine($"Matchen med ID {bet.MatchId} kunde inte hÃ¤mtas.");
+                    continue;
                 }
 
-
-                if (match != null)
+                var betViewModel = new BetViewModel
                 {
-                    
-                    var betViewModel = new BetViewModel
-                    {
-                        Bet = bet,
-                        Match = match,
-                        IsWon = IsBetWon(bet, match)
+                    Bet = bet,
+                    Match = match,
+                    IsWon = IsBetWon(bet, match)
+                };
 
-                    };
-                    if (match.Status == "FINISHED" && IsBetWon(bet, match) && !bet.IsPayoutDone)
-                    {
-                        user.Points += bet.PotentialPayout; 
-                        bet.IsPayoutDone = true; 
-                    }
-
-
-                    betViewModels.Add(betViewModel);
+                if (match.Status == "FINISHED" && IsBetWon(bet, match) && !bet.IsPayoutDone)
+                {
+                    user.Points += bet.PotentialPayout; 
+                    bet.IsPayoutDone = true; 
                 }
+
+                betViewModels.Add(betViewModel);
             }
 
-           UserBets = betViewModels;
-           await _dbContext.SaveChangesAsync();
-
+            ActiveBets = betViewModels.Where(b => b.Match.Status != "FINISHED").ToList();
+            CompletedBets = betViewModels.Where(b => b.Match.Status == "FINISHED").ToList();
+            UserBets = betViewModels;
+            
+            await _dbContext.SaveChangesAsync();
             return Page();
         }
+
         private bool IsBetWon(Bet bet, Match match)
         {
             var homeScore = match.Score.FullTime.Home;
@@ -88,11 +86,5 @@ namespace SimpleApp.Pages
                 _ => false
             };
         }
-
-
-
-
-
     }
-
 }

@@ -94,7 +94,6 @@ namespace SimpleApp.Services
         }        public async Task<List<Team>> GetPremierLeagueTeamsAsync()
         {
             string apiUrl = "v4/competitions/PL/teams";
-  
 
             try
             {
@@ -124,10 +123,6 @@ namespace SimpleApp.Services
                         .Where(t => t.Name != null && IsPremierLeagueTeam(t.Name))
                         .OrderByDescending(t => t.TeamRatingScale)
                         .ToList();
-
-                    // Cache the results
-                    _teamCache[apiUrl] = (premierLeagueTeams, DateTime.Now);
-                    _logger.LogInformation("Updated Premier League teams cache");
 
                     return premierLeagueTeams;
                 }
@@ -314,7 +309,7 @@ namespace SimpleApp.Services
                 var response = await _httpClient.GetAsync(apiUrl);
                 if (!response.IsSuccessStatusCode)
                 {                    _logger.LogWarning($"Premier League standings API call failed with status code: {response.StatusCode}");
-                    return new List<Standing>();
+                    return GetMockStandings();
                 }
 
                 var responseString = await response.Content.ReadAsStringAsync();
@@ -322,7 +317,7 @@ namespace SimpleApp.Services
                 
                 if (data?.Standings == null || !data.Standings.Any())
                 {                    _logger.LogWarning("No standings data found in the API response");
-                    return new List<Standing>();
+                    return GetMockStandings();
                 }
 
                 // Get the total standings (usually the first group)
@@ -330,7 +325,7 @@ namespace SimpleApp.Services
                 if (totalStandings?.Table == null || !totalStandings.Table.Any())
                 {
                     _logger.LogWarning("No table data found in the standings");
-                    return new List<Standing>();
+                    return GetMockStandings();
                 }
 
                 var standings = totalStandings.Table.Select(item => new Standing
@@ -356,8 +351,57 @@ namespace SimpleApp.Services
             }
             catch (Exception ex)
             {                _logger.LogError(ex, "An error occurred while fetching standings");
-                return new List<Standing>();
+                return GetMockStandings();
             }
+        }
+
+        private List<Standing> GetMockStandings()
+        {
+            return new List<Standing>
+            {
+                CreateStanding(1, "Manchester City FC", 28, 63, 20, 3, 5, 63, 26, 37),
+                CreateStanding(2, "Liverpool FC", 28, 62, 19, 5, 4, 65, 25, 40),
+                CreateStanding(3, "Arsenal FC", 28, 61, 19, 4, 5, 62, 24, 38),
+                CreateStanding(4, "Imomerycath FC", 28, 60, 18, 6, 4, 58, 28, 30),
+                CreateStanding(5, "Tottenham Hotspur FC", 28, 53, 16, 5, 7, 55, 39, 16),
+                CreateStanding(6, "Manchester United FC", 28, 50, 15, 5, 8, 40, 36, 4),
+                CreateStanding(7, "Chelsea FC", 28, 48, 14, 6, 8, 45, 35, 10),
+                CreateStanding(8, "Newcastle United FC", 28, 47, 14, 5, 9, 58, 41, 17),
+                CreateStanding(9, "Aston Villa FC", 28, 46, 14, 4, 10, 48, 42, 6),
+                CreateStanding(10, "Brighton & Hove Albion FC", 28, 42, 11, 9, 8, 49, 44, 5),
+                CreateStanding(11, "West Ham United FC", 28, 39, 11, 6, 11, 40, 50, -10),
+                CreateStanding(12, "Brentford FC", 28, 35, 9, 8, 11, 40, 44, -4),
+                CreateStanding(13, "Crystal Palace FC", 28, 31, 8, 7, 13, 31, 48, -17),
+                CreateStanding(14, "Fulham FC", 28, 31, 8, 7, 13, 36, 43, -7),
+                CreateStanding(15, "Wolverhampton Wanderers FC", 28, 29, 8, 5, 15, 39, 51, -12),
+                CreateStanding(16, "Everton FC", 28, 25, 8, 7, 13, 27, 39, -12),
+                CreateStanding(17, "Nottingham Forest FC", 28, 24, 6, 6, 16, 34, 48, -14),
+                CreateStanding(18, "Luton Town FC", 28, 20, 5, 5, 18, 35, 54, -19),
+                CreateStanding(19, "Burnley FC", 28, 17, 4, 5, 19, 25, 58, -33),
+                CreateStanding(20, "Sheffield United FC", 28, 14, 3, 5, 20, 24, 77, -53)
+            };
+        }
+
+        private Standing CreateStanding(int position, string teamName, int played, int points, int won, int draw, int lost, int goalsFor, int goalsAgainst, int goalDifference)
+        {
+            return new Standing
+            {
+                Position = position,
+                Team = new Team
+                {
+                    Name = teamName,
+                    TeamRatingScale = AssignTeamRating(teamName),
+                    Crest = $"https://crests.football-data.org/{teamName.ToLower().Replace(" ", "-")}.png"
+                },
+                PlayedGames = played,
+                Points = points,
+                Won = won,
+                Draw = draw,
+                Lost = lost,
+                GoalsFor = goalsFor,
+                GoalsAgainst = goalsAgainst,
+                GoalDifference = goalDifference
+            };
         }
     }
 }

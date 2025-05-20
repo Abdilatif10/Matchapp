@@ -5,81 +5,168 @@
     ViewData["Title"] = "Mina Bets";
 }
 
-<h2 class="mb-4">Dina Lagda Bets</h2>
+<div class="bets-container">
+    <h2 class="page-title">Dina Lagda Bets</h2>
 
-@if (Model.UserBets?.Any() != true)
-{
-    <p class="text-muted">Du har inte lagt några bets än.</p>
-    return;
-}
+    @if (Model.UserBets?.Any() != true)
+    {
+        <div class="no-bets-message">
+            <i class="fas fa-ticket-alt mb-3"></i>
+            <p>Du har inte lagt några bets än.</p>
+            <a href="/" class="btn btn-primary">Hitta matcher att betta på</a>
+        </div>
+        return;
+    }
 
-<div class="container">
-  
-    <h3 class="mb-3">Aktiva Bets</h3>
-    <div class="row">
-        @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "TIMED"))
-        {
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-      
-                        <h5 class="card-title d-flex align-items-center">
-                            <img src="@bet.Match.HomeTeam.Crest" alt="home" class="team-logo" style="width: 30px; height: 30px;" />
-                            <span class="mx-2">@bet.Match.HomeTeam.Name vs @bet.Match.AwayTeam.Name</span>
-                            <img src="@bet.Match.AwayTeam.Crest" alt="away" class="team-logo" style="width: 30px; height: 30px;" />
-                        </h5>
+    <div class="bets-section">
+        <h3 class="section-title">
+            <i class="fas fa-clock me-2"></i>
+            Aktiva Bets
+        </h3>
+        <div class="bets-grid">
+            @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "TIMED"))
+            {
+                <div class="bet-card">
+                    <div class="bet-header">
+                        <div class="match-time">
+                            <i class="far fa-calendar-alt me-2"></i>
+                            @bet.Match.UtcDate.ToString("HH:mm, MMM dd")
+                        </div>
+                        <div class="competition">
+                            <img src="@bet.Match.Competition?.Emblem" alt="@bet.Match.Competition?.Name" />
+                        </div>
+                    </div>
 
-                       
-                        <p><strong>Insats:</strong> @bet.Bet.Amount points</p>
-                        <p><strong>Bettyp:</strong> @bet.Bet.BetType</p>
-                        <p><strong>Odds:</strong> @GetOdds(bet)</p>
-                        <p><strong>Match Tid:</strong> @bet.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
-                        <p><strong>Möjlig utbetalning:</strong> @bet.Bet.PotentialPayout points</p>
-                        <span class="badge bg-primary">Planerad</span>
+                    <div class="teams-container">
+                        <div class="team">
+                            <img src="@bet.Match.HomeTeam.Crest" alt="@bet.Match.HomeTeam.Name" class="team-logo" />
+                            <span class="team-name">@bet.Match.HomeTeam.Name</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <img src="@bet.Match.AwayTeam.Crest" alt="@bet.Match.AwayTeam.Name" class="team-logo" />
+                            <span class="team-name">@bet.Match.AwayTeam.Name</span>
+                        </div>
+                    </div>
+
+                    <div class="bet-details">
+                        <div class="bet-info">
+                            <span class="label">Insats:</span>
+                            <span class="value">@bet.Bet.Amount points</span>
+                        </div>
+                        <div class="bet-info">
+                            <span class="label">Bettyp:</span>
+                            <span class="value">@GetBetTypeDisplay(bet.Bet.BetType)</span>
+                        </div>
+                        <div class="bet-info">
+                            <span class="label">Odds:</span>
+                            <span class="value">@GetOdds(bet)</span>
+                        </div>
+                        <div class="bet-info highlight">
+                            <span class="label">Möjlig vinst:</span>
+                            <span class="value win">@bet.Bet.PotentialPayout points</span>
+                        </div>
+                    </div>
+
+                    <div class="bet-status pending">
+                        <i class="fas fa-hourglass-half me-2"></i>
+                        Planerad
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
 
-    <h3 class="mt-5 mb-3">Avgjorda Bets</h3>
-    <div class="row">
-        @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "FINISHED" || b.Match.Status == "POSTPONED"))
-        {
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm @(bet.IsWon ? "border-success" : "border-danger")">
-                    <div class="card-body">
-                       
-                        <h5 class="card-title d-flex align-items-center">
-                            <img src="@bet.Match.HomeTeam.Crest" alt="home" class="team-logo" style="width: 30px; height: 30px;" />
-                            <span class="mx-2">@bet.Match.HomeTeam.Name vs @bet.Match.AwayTeam.Name</span>
-                            <img src="@bet.Match.AwayTeam.Crest" alt="away" class="team-logo" style="width: 30px; height: 30px;" />
-                        </h5>
-
-           
-                        <p><strong>Insats:</strong> @bet.Bet.Amount points</p>
-                        <p><strong>Bettyp:</strong> @bet.Bet.BetType</p>
-                        <p><strong>Match Tid:</strong> @bet.Match.UtcDate.ToString("yyyy-MM-dd HH:mm")</p>
-                        <p><strong>Möjlig utbetalning:</strong> @bet.Bet.PotentialPayout points</p>
-
-                        @if (bet.Match.Status == "POSTPONED")
-                        {
-                            <span class="badge bg-warning">Uppskjuten</span>
-                        }
-                        else
-                        {
-                            <span class="badge @(bet.IsWon ? "bg-success" : "bg-danger")">
-                                @(bet.IsWon ? "Vinst" : "Förlust")
-                            </span>
-                        }
+        <h3 class="section-title mt-5">
+            <i class="fas fa-flag-checkered me-2"></i>
+            Avgjorda Bets
+        </h3>
+        <div class="bets-grid">
+            @foreach (var bet in Model.UserBets.Where(b => b.Match.Status == "FINISHED" || b.Match.Status == "POSTPONED"))
+            {
+                <div class="bet-card @(bet.IsWon ? "won" : "lost")">
+                    <div class="bet-header">
+                        <div class="match-time">
+                            <i class="far fa-calendar-alt me-2"></i>
+                            @bet.Match.UtcDate.ToString("HH:mm, MMM dd")
+                        </div>
+                        <div class="competition">
+                            <img src="@bet.Match.Competition?.Emblem" alt="@bet.Match.Competition?.Name" />
+                        </div>
                     </div>
+
+                    <div class="teams-container">
+                        <div class="team">
+                            <img src="@bet.Match.HomeTeam.Crest" alt="@bet.Match.HomeTeam.Name" class="team-logo" />
+                            <span class="team-name">@bet.Match.HomeTeam.Name</span>
+                        </div>
+                        <div class="vs">
+                            @if (bet.Match.Score?.FullTime != null)
+                            {
+                                <div class="score">@bet.Match.Score.FullTime.Home - @bet.Match.Score.FullTime.Away</div>
+                            }
+                        </div>
+                        <div class="team">
+                            <img src="@bet.Match.AwayTeam.Crest" alt="@bet.Match.AwayTeam.Name" class="team-logo" />
+                            <span class="team-name">@bet.Match.AwayTeam.Name</span>
+                        </div>
+                    </div>
+
+                    <div class="bet-details">
+                        <div class="bet-info">
+                            <span class="label">Insats:</span>
+                            <span class="value">@bet.Bet.Amount points</span>
+                        </div>
+                        <div class="bet-info">
+                            <span class="label">Bettyp:</span>
+                            <span class="value">@GetBetTypeDisplay(bet.Bet.BetType)</span>
+                        </div>
+                        <div class="bet-info">
+                            <span class="label">Odds:</span>
+                            <span class="value">@GetOdds(bet)</span>
+                        </div>
+                        <div class="bet-info highlight">
+                            @if (bet.IsWon)
+                            {
+                                <span class="label">Vinst:</span>
+                                <span class="value win">+@bet.Bet.PotentialPayout points</span>
+                            }
+                            else
+                            {
+                                <span class="label">Förlust:</span>
+                                <span class="value loss">-@bet.Bet.Amount points</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (bet.Match.Status == "POSTPONED")
+                    {
+                        <div class="bet-status postponed">
+                            <i class="fas fa-pause-circle me-2"></i>
+                            Uppskjuten
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="bet-status @(bet.IsWon ? "won" : "lost")">
+                            <i class="@(bet.IsWon ? "fas fa-trophy" : "fas fa-times-circle") me-2"></i>
+                            @(bet.IsWon ? "Vinst" : "Förlust")
+                        </div>
+                    }
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>
 
 @functions {
+    private string GetBetTypeDisplay(string betType) => betType switch
+    {
+        "HomeWin" => "Hemmavinst",
+        "Draw" => "Oavgjort",
+        "AwayWin" => "Bortavinst",
+        _ => betType
+    };
+
     private string GetOdds(BetViewModel bet)
     {
         return bet.Bet.BetType switch
@@ -90,3 +177,212 @@
         };
     }
 }
+
+<style>
+    .bets-container {
+        max-width: min(1400px, 95vw);
+        margin: 0 auto;
+        padding: clamp(1rem, 3vw, 2rem);
+        min-height: calc(100vh - 160px);
+        background: linear-gradient(135deg, #37003c 0%, #520066 100%);
+        color: white;
+        border-radius: clamp(8px, 2vw, 16px);
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: 0.5px;
+    }
+
+    .section-title {
+        color: white;
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        padding-left: 0.5rem;
+        border-left: 4px solid #00ff85;
+    }
+
+    .bets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+        gap: clamp(1rem, 2vw, 1.5rem);
+        width: 100%;
+    }
+
+    .bet-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: clamp(12px, 2vw, 16px);
+        padding: clamp(1rem, 2vw, 1.5rem);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .bet-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .bet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .match-time {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .competition img {
+        width: clamp(24px, 4vw, 32px);
+        height: clamp(24px, 4vw, 32px);
+        object-fit: contain;
+    }
+
+    .teams-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .team {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .team-logo {
+        width: clamp(32px, 6vw, 48px);
+        height: clamp(32px, 6vw, 48px);
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .team:hover .team-logo {
+        transform: scale(1.1);
+    }
+
+    .team-name {
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .vs {
+        font-weight: bold;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 0 clamp(0.5rem, 2vw, 1rem);
+    }
+
+    .score {
+        font-size: clamp(1.2rem, 3vw, 1.4rem);
+        font-weight: bold;
+        color: #00ff85;
+        text-shadow: 0 0 20px rgba(0, 255, 133, 0.2);
+    }
+
+    .bet-details {
+        display: grid;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .bet-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bet-info.highlight {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+    }
+
+    .value {
+        font-weight: 600;
+        color: white;
+    }
+
+    .value.win {
+        color: #00ff85;
+        text-shadow: 0 0 20px rgba(0, 255, 133, 0.2);
+    }
+
+    .value.loss {
+        color: #ff4444;
+        text-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+    }
+
+    .bet-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+
+    .bet-status.pending {
+        background: linear-gradient(135deg, #2196f3, #03a9f4);
+    }
+
+    .bet-status.won {
+        background: linear-gradient(135deg, #4caf50, #00c853);
+    }
+
+    .bet-status.lost {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+    }
+
+    .bet-status.postponed {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+    }
+
+    .no-bets-message {
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .no-bets-message i {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 1rem;
+    }
+</style>
