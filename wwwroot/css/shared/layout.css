@@ -1,0 +1,42 @@
+.page-container {
+    max-width: min(1400px, 95vw);
+    margin: 0 auto;
+    padding: clamp(1rem, 3vw, 2rem);
+    min-height: calc(100vh - 160px);
+    background: var(--primary-gradient);
+    color: var(--text-primary);
+    border-radius: clamp(8px, 2vw, 16px);
+}
+
+.page-title {
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, var(--font-size-xl));
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.no-data-message {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--background-light);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-light);
+}
+
+.no-data-message i {
+    font-size: 3rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.section-title {
+    color: var(--text-primary);
+    font-size: clamp(1.2rem, 3vw, var(--font-size-lg));
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+    padding-left: 0.5rem;
+    border-left: 4px solid var(--accent-color);
+}

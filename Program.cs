@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SimpleApp.Data;
 using SimpleApp.Models;
 using SimpleApp.Services;
+using SimpleApp.Services.Interfaces;
 
 namespace SimpleApp
 {
@@ -27,12 +28,14 @@ namespace SimpleApp
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
-                .AddDefaultUI();
-
-            builder.Services.AddHttpClient<FootballDataService>();
-            
-            // Register FootballDataService with logging
+                .AddDefaultUI();            // Add memory cache
+            builder.Services.AddMemoryCache();            builder.Services.AddHttpClient<FootballDataService>();
+            builder.Services.AddHttpClient<TriviaService>();
+            // Register services with dependency injection
+            builder.Services.AddScoped<IFootballDataService, FootballDataService>();
             builder.Services.AddScoped<FootballDataService>();
+            builder.Services.AddScoped<TriviaService>();
+            builder.Services.AddScoped<FootballQuizService>();
 
             var app = builder.Build();
 

@@ -1,0 +1,96 @@
+/* Premier League Teams Page Styles */
+.premier-league-container {
+    background-color: var(--primary-color);
+    min-height: calc(100vh - 160px);
+    padding: var(--spacing-lg) var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.premier-league-title {
+    text-align: center;
+    color: var(--text-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.search-container {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+}
+
+.team-search {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-md);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--background-light);
+    color: var(--text-primary);
+}
+
+.team-search::placeholder {
+    color: var(--text-secondary);
+}
+
+.content-container {
+    display: flex;
+    gap: var(--spacing-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.show-matches .teams-grid {
+    flex: 0 0 60%;
+}
+
+.matches-panel {
+    background: var(--background-light);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    backdrop-filter: blur(10px);
+}
+
+.matches-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.matches-header h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+}
+
+.date-picker {
+    background: var(--background-light);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-primary);
+    padding: var(--spacing-xs);
+}
+
+@media (max-width: 1200px) {
+    .content-container {
+        flex-direction: column;
+    }
+
+    .show-matches .teams-grid {
+        flex: none;
+    }
+
+    .matches-panel {
+        flex: none;
+    }
+}

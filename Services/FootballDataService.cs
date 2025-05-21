@@ -6,31 +6,49 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using SimpleApp.Models;
+using SimpleApp.Services.Constants;
+using SimpleApp.Services.Helpers;
+using SimpleApp.Services.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace SimpleApp.Services
-{      public class FootballDataService
+{
+    /// <summary>
+    /// Service for interacting with football data API
+    /// </summary>
+    public class FootballDataService : IFootballDataService
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<FootballDataService> _logger;
+        private readonly IMemoryCache _cache;
         private const string ApiUrl = "v4/matches";
         private const string ApiKey = "328dbcfa6fc4408f9e7c8e9b7a8cc1c0";
-
-        public FootballDataService(HttpClient httpClient, ILogger<FootballDataService> logger)
+        
+        // Cache keys
+        private const string MATCHES_CACHE_KEY = "matches_{0}_{1}_{2}"; // dateFrom_dateTo_leagues
+        private const string TEAMS_CACHE_KEY = "premier_league_teams";
+        private const string MATCH_CACHE_KEY = "match_{0}"; // matchId
+        private const string STANDINGS_CACHE_KEY = "premier_league_standings";
+        private static readonly TimeSpan DEFAULT_CACHE_DURATION = TimeSpan.FromMinutes(5);/// <summary>
+        /// Initializes a new instance of the FootballDataService
+        /// </summary>
+        public FootballDataService(HttpClient httpClient, ILogger<FootballDataService> logger, IMemoryCache cache)
         {
             _httpClient = httpClient;
             _logger = logger;
-            _httpClient.BaseAddress = new Uri("https://api.football-data.org/");
-            _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", ApiKey);
+            _cache = cache;
+            _httpClient.BaseAddress = new Uri(ApiConstants.BaseUrl);
+            _httpClient.DefaultRequestHeaders.Add("X-Auth-Token", ApiConstants.ApiKey);
             _httpClient.DefaultRequestHeaders.Add("X-Unfold-Goals", "true");
         }        private class TeamsApiResponse
         {
-            public required List<Team>? Teams { get; set; }
+            public List<Team>? Teams { get; set; }
         }
 
         private class FootballApiResponse
         {
-            public required List<Match>? Matches { get; set; }
-            public required List<Team>? Teams { get; set; }
+            public List<Match>? Matches { get; set; }
+            public List<Team>? Teams { get; set; }
         }
 
         private int AssignTeamRating(string? teamName)
@@ -93,6 +111,13 @@ namespace SimpleApp.Services
             };
         }        public async Task<List<Team>> GetPremierLeagueTeamsAsync()
         {
+            // Try to get from cache first
+            if (_cache.TryGetValue<List<Team>>(TEAMS_CACHE_KEY, out var cachedTeams) && cachedTeams != null)
+            {
+                _logger.LogInformation("Returning Premier League teams from cache");
+                return cachedTeams;
+            }
+
             string apiUrl = "v4/competitions/PL/teams";
 
             try
@@ -102,7 +127,7 @@ namespace SimpleApp.Services
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
                     var data = JsonConvert.DeserializeObject<TeamsApiResponse>(responseString);
-                    
+
                     if (data?.Teams == null)
                     {
                         _logger.LogWarning("No teams data received from the API");
@@ -115,14 +140,18 @@ namespace SimpleApp.Services
                         if (team?.Name != null)
                         {
                             team.TeamRatingScale = AssignTeamRating(team.Name);
-                        }
-                    }
+                        }                    }
 
                     // Only return Premier League teams ordered by their rating
                     var premierLeagueTeams = data.Teams
                         .Where(t => t.Name != null && IsPremierLeagueTeam(t.Name))
                         .OrderByDescending(t => t.TeamRatingScale)
                         .ToList();
+
+                    // Cache the results
+                    var cacheOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(DEFAULT_CACHE_DURATION);
+                    _cache.Set(TEAMS_CACHE_KEY, premierLeagueTeams, cacheOptions);
 
                     return premierLeagueTeams;
                 }
@@ -202,6 +231,15 @@ namespace SimpleApp.Services
             return allTeams;
         }        public async Task<List<Match>> GetMatchesAsync(string dateFrom, string dateTo, List<string> leagues)
         {
+            string cacheKey = string.Format(MATCHES_CACHE_KEY, dateFrom, dateTo, string.Join("_", leagues));
+            
+            // Try to get from cache first
+            if (_cache.TryGetValue<List<Match>>(cacheKey, out var cachedMatches) && cachedMatches != null)
+            {
+                _logger.LogInformation("Returning matches from cache");
+                return cachedMatches;
+            }
+
             string leagueFilter = string.Join(",", leagues);
             
             // API only allows fetching matches up to 10 days ahead
@@ -244,9 +282,12 @@ namespace SimpleApp.Services
                     {
                         match.AwayTeam.TeamRatingScale = AssignTeamRating(match.AwayTeam.Name);
                     }
-                }
+                }                // Cache the results
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1)); // Cache for 1 minute since match data changes frequently
+                _cache.Set(cacheKey, data.Matches, cacheOptions);
 
-                return data.Matches;
+                return data.Matches ?? new List<Match>();
             }
             catch (Exception ex)
             {
@@ -257,6 +298,15 @@ namespace SimpleApp.Services
 
         public async Task<Match?> GetMatchByIdAsync(int matchId)
         {
+            string cacheKey = string.Format(MATCH_CACHE_KEY, matchId);
+            
+            // Try to get from cache first
+            if (_cache.TryGetValue<Match>(cacheKey, out var cachedMatch) && cachedMatch != null)
+            {
+                _logger.LogInformation("Returning match from cache");
+                return cachedMatch;
+            }
+
             var response = await _httpClient.GetAsync($"v4/matches/{matchId}");
 
             // Log the status code and response
@@ -289,6 +339,18 @@ namespace SimpleApp.Services
                     match.AwayTeam.TeamRatingScale = AssignTeamRating(match.AwayTeam.Name);
                 }
 
+                // Cache the match with appropriate duration based on status
+                var cacheDuration = match.Status switch
+                {
+                    "LIVE" => TimeSpan.FromSeconds(30),  // Very short cache for live matches
+                    "FINISHED" => TimeSpan.FromHours(24), // Long cache for finished matches
+                    _ => TimeSpan.FromMinutes(5)         // Default cache duration for scheduled matches
+                };
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(cacheDuration);
+                _cache.Set(cacheKey, match, cacheOptions);
+
                 return match;
             }
             catch (Exception ex)
@@ -302,13 +364,21 @@ namespace SimpleApp.Services
 
         public async Task<List<Standing>> GetPremierLeagueStandingsAsync()
         {
+            // Try to get from cache first
+            if (_cache.TryGetValue<List<Standing>>(STANDINGS_CACHE_KEY, out var cachedStandings) && cachedStandings != null)
+            {
+                _logger.LogInformation("Returning standings from cache");
+                return cachedStandings;
+            }
+
             string apiUrl = "v4/competitions/PL/standings";
 
             try
             {
                 var response = await _httpClient.GetAsync(apiUrl);
                 if (!response.IsSuccessStatusCode)
-                {                    _logger.LogWarning($"Premier League standings API call failed with status code: {response.StatusCode}");
+                {
+                    _logger.LogWarning($"Premier League standings API call failed with status code: {response.StatusCode}");
                     return GetMockStandings();
                 }
 
@@ -316,7 +386,8 @@ namespace SimpleApp.Services
                 var data = JsonConvert.DeserializeObject<StandingResponse>(responseString);
                 
                 if (data?.Standings == null || !data.Standings.Any())
-                {                    _logger.LogWarning("No standings data found in the API response");
+                {
+                    _logger.LogWarning("No standings data found in the API response");
                     return GetMockStandings();
                 }
 
@@ -347,10 +418,16 @@ namespace SimpleApp.Services
                     GoalDifference = item.GoalDifference
                 }).ToList();
 
+                // Cache the standings for 1 hour, since they don't change frequently
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                _cache.Set(STANDINGS_CACHE_KEY, standings, cacheOptions);
+
                 return standings;
             }
             catch (Exception ex)
-            {                _logger.LogError(ex, "An error occurred while fetching standings");
+            {
+                _logger.LogError(ex, "An error occurred while fetching standings");
                 return GetMockStandings();
             }
         }

@@ -1,0 +1,216 @@
+@page
+@model SimpleApp.Pages.FootballQuizModel
+@{
+    ViewData["Title"] = "Football Quiz";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/quiz.css" />
+}
+
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h2>Premier League Football Quiz</h2>
+        <p class="lead">Test your knowledge about Premier League teams and earn points!</p>
+    </div>
+
+    <div class="points-display">
+        <div class="d-flex justify-content-between align-items-center">
+            <span>Your Current Points:</span>
+            <span class="h4 mb-0">@(Model.CurrentUser?.Points ?? 0)</span>
+        </div>
+    </div>
+
+    @if (Model.QuizCompleted)
+    {
+        <div class="result-card">
+            <h3>Quiz Results</h3>
+            <div class="alert alert-success" role="alert">
+                @Model.Message
+            </div>
+
+            <div class="results-grid">
+                @for (var i = 0; i < Model.Questions.Count; i++)
+                {
+                    var question = Model.Questions[i];
+                    var isCorrect = Model.AnswerResults[i];
+                    <div class="result-item @(isCorrect ? "correct" : "incorrect")">
+                        <div class="question-number">Q@(i + 1) • @question.Points pts</div>
+                        @if (question.TeamName != null)
+                        {
+                            <img src="https://crests.football-data.org/@(question.TeamName.ToLower().Replace(" ", "-")).png" 
+                                 alt="@question.TeamName crest" class="team-crest" />
+                        }
+                        <p class="question-text">@question.Question</p>
+                        <div class="answer-comparison">
+                            @if (isCorrect)
+                            {
+                                <p class="correct-answer">✓ @question.Options[Model.UserAnswers[i]]</p>
+                            }
+                            else
+                            {
+                                <p class="wrong-answer">✗ @question.Options[Model.UserAnswers[i]]</p>
+                                <p class="correct-answer">✓ @question.Options[question.CorrectAnswerIndex]</p>
+                            }
+                        </div>
+                        @if (question.Explanation != null)
+                        {
+                            <div class="explanation">
+                                @question.Explanation
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="quiz-actions">
+                <a asp-page="./FootballQuiz" class="btn btn-primary">Take Another Quiz</a>
+                <a asp-page="./LeaderBoard" class="btn btn-secondary">View Leaderboard</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <form method="post" id="quizForm">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="question-indicator"></div>
+            
+            @for (var i = 0; i < Model.Questions.Count; i++)
+            {
+                var question = Model.Questions[i];
+                <div class="question-card @(i == 0 ? "active" : "")" data-question="@i">
+                    <div class="question-content">
+                        <div class="question-header">
+                            <h5 class="mb-0">Question @(i + 1) of @Model.Questions.Count</h5>
+                        </div>
+                        @if (question.TeamName != null)
+                        {
+                            <img src="https://crests.football-data.org/@(question.TeamName.ToLower().Replace(" ", "-")).png" 
+                                 alt="@question.TeamName crest" class="team-crest" />
+                        }
+                        <p class="question-text">@question.Question</p>
+                    </div>
+                    <div class="answers-grid">
+                        @for (var j = 0; j < question.Options.Count; j++)
+                        {
+                            <div class="answer-option">
+                                <input type="radio" name="UserAnswers[@i]" value="@j" 
+                                       id="q@(i)_@j" required>
+                                <label for="q@(i)_@j">
+                                    @question.Options[j]
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            
+            <div class="quiz-navigation">
+                <button type="button" class="nav-button" id="prevQuestion" disabled>Previous</button>
+                <button type="button" class="nav-button" id="nextQuestion">Next</button>
+                <button type="submit" class="quiz-submit" style="display: none;">Submit Quiz</button>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const totalQuestions = $('.question-card').length;
+            let currentQuestion = 0;
+            
+            // Ensure first question is visible
+            showQuestion(0);
+            
+            function showQuestion(index) {
+                // Hide all questions first
+                $('.question-card').removeClass('active').css('opacity', '0');
+                
+                // Show the selected question with animation
+                const $currentCard = $(`.question-card[data-question="${index}"]`);
+                $currentCard.addClass('active');
+                
+                // Use setTimeout to ensure the display: block has taken effect
+                setTimeout(() => {
+                    $currentCard.css('opacity', '1');
+                }, 50);
+                
+                // Update navigation buttons
+                $('#prevQuestion').prop('disabled', index === 0);
+                if (index === totalQuestions - 1) {
+                    $('#nextQuestion').hide();
+                    $('.quiz-submit').show();
+                } else {
+                    $('#nextQuestion').show();
+                    $('.quiz-submit').hide();
+                }
+                
+                // Update progress
+                updateProgress();
+            }
+            
+            function updateProgress() {
+                const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+                $('.progress-fill').css('width', `${progress}%`);
+                $('.indicator-dot').removeClass('active');
+                $('.indicator-dot').eq(currentQuestion).addClass('active');
+            }
+            
+            // Create indicator dots
+            for (let i = 0; i < totalQuestions; i++) {
+                $('.question-indicator').append(`<div class="indicator-dot ${i === 0 ? 'active' : ''}"></div>`);
+            }
+            
+            $('#nextQuestion').click(function() {
+                if (currentQuestion < totalQuestions - 1) {
+                    const currentCard = $(`.question-card[data-question="${currentQuestion}"]`);
+                    if (currentCard.find('input[type="radio"]:checked').length === 0) {
+                        alert('Please select an answer before moving to the next question.');
+                        return;
+                    }
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            $('#prevQuestion').click(function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            // Highlight selected answer option
+            $('.answer-option input[type="radio"]').change(function() {
+                $(this).closest('.question-content')
+                    .find('.answer-option')
+                    .removeClass('selected');
+                $(this).closest('.answer-option')
+                    .addClass('selected');
+            });
+            
+            // Form validation
+            $('#quizForm').on('submit', function(e) {
+                var allQuestionsAnswered = true;
+                $('.question-card').each(function() {
+                    if ($(this).find('input[type="radio"]:checked').length === 0) {
+                        allQuestionsAnswered = false;
+                        return false;
+                    }
+                });
+
+                if (!allQuestionsAnswered) {
+                    e.preventDefault();
+                    alert('Please answer all questions before submitting!');
+                }
+            });
+            
+            // Initialize
+            updateProgress();
+        });
+    </script>
+}

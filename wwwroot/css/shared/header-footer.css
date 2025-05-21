@@ -1,0 +1,51 @@
+/* Header Styles */
+.navbar {
+    background: var(--background-light) !important;
+    backdrop-filter: blur(10px);
+    border: none !important;
+}
+
+.navbar-brand, .nav-link {
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover,
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Footer Styles */
+.footer {
+    background: var(--background-light);
+    backdrop-filter: blur(10px);
+    border: none;
+    color: var(--text-secondary) !important;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 0;
+}
+
+.footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #33ff9f;
+}
+
+/* Main Content Spacing */
+main {
+    margin-bottom: 80px;
+}
