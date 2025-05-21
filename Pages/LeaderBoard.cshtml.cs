@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using SimpleApp.Data;
-using SimpleApp.Models;
+using BettingApp.Data;
+using BettingApp.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleApp.Pages
+namespace BettingApp.Pages
 {
     public class LeaderBoardModel : PageModel
     {

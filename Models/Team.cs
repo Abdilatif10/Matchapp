@@ -1,4 +1,4 @@
-ï»¿namespace SimpleApp.Models
+namespace BettingApp.Models
 {
     public class Team
     {
@@ -10,14 +10,14 @@
     }
 
 
-    //LÃ¤gg till alla 20 PL lag i en lista och ge de ett vÃ¤rde pÃ¥ 1-10 pÃ¥ TeamRatingScale--- 1 Ã¤r sÃ¤mst och 10 Ã¤r bÃ¤st
-    //Logiken fÃ¶r Oddsen mÃ¥ste kommunicera med TeamRatingScale fÃ¶r att ge rÃ¤tt odds
-    //Vi mÃ¥ste kunna anvÃ¤nda TeamRatingScale vÃ¤rdet fÃ¶r att kunna ge rÃ¤tt odds och veta vilket lag som Ã¤r favorit
+    //Lägg till alla 20 PL lag i en lista och ge de ett värde på 1-10 på TeamRatingScale--- 1 är sämst och 10 är bäst
+    //Logiken för Oddsen måste kommunicera med TeamRatingScale för att ge rätt odds
+    //Vi måste kunna använda TeamRatingScale värdet för att kunna ge rätt odds och veta vilket lag som är favorit
     // if(homeTeam.TeamRatingScale > awayTeam.TeamRatingScale)
     // {home.TeamRatingScale = favouriteTeam
-    // = ge odds fÃ¶r favoruiteteam }
+    // = ge odds för favoruiteteam }
 
-    //Den hÃ¤r kommentaren Ã¤r fÃ¶r att testa att jag kan kommentera och se namnet pÃ¥ commiten istÃ¤llet fÃ¶r hashen.
+    //Den här kommentaren är för att testa att jag kan kommentera och se namnet på commiten istället för hashen.
 
 
 

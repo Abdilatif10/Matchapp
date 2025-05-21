@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SimpleApp.Services;
+using BettingApp.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SimpleApp.Models;
+using BettingApp.Models;
 
-namespace SimpleApp.Pages
+namespace BettingApp.Pages
 {
     public class StandingsModel : PageModel
     {

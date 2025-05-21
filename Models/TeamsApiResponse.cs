@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SimpleApp.Models
+namespace BettingApp.Models
 {
     public class TeamsApiResponse
     {

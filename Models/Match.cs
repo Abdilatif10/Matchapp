@@ -1,5 +1,5 @@
-﻿
-namespace SimpleApp.Models
+
+namespace BettingApp.Models
 {
     public class Match
     {

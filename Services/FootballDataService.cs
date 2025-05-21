@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using SimpleApp.Models;
+using BettingApp.Models;
 
-namespace SimpleApp.Services
+namespace BettingApp.Services
 {      public class FootballDataService
     {
         private readonly HttpClient _httpClient;

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SimpleApp.Models;
-using SimpleApp.Services;
+using BettingApp.Models;
+using BettingApp.Services;
 using Microsoft.Extensions.Logging;
 
-namespace SimpleApp.Pages
+namespace BettingApp.Pages
 {
     public class IndexModel : PageModel
     {

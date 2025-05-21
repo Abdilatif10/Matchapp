@@ -1,17 +1,17 @@
-ï»¿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleApp.Models
+namespace BettingApp.Models
 {
     public class User : IdentityUser
     {
-        [Required(ErrorMessage = "FÃ¶rnamn Ã¤r obligatoriskt.")]
-        [StringLength(30, MinimumLength = 1, ErrorMessage = "FÃ¶rnamnet mÃ¥ste vara mellan 1 och 30 tecken.")]
+        [Required(ErrorMessage = "Förnamn är obligatoriskt.")]
+        [StringLength(30, MinimumLength = 1, ErrorMessage = "Förnamnet måste vara mellan 1 och 30 tecken.")]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "FÃ¶delsedatum Ã¤r obligatoriskt.")]
+        [Required(ErrorMessage = "Födelsedatum är obligatoriskt.")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
-        public double? Points { get; set; } = 100; //StandardvÃ¤rde
+        public double? Points { get; set; } = 100; //Standardvärde
 
        
 

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SimpleApp.Data;
-using SimpleApp.Models;
-using SimpleApp.Services;
+using BettingApp.Data;
+using BettingApp.Models;
+using BettingApp.Services;
 
-namespace SimpleApp
+namespace BettingApp
 {
     public class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace SimpleApp.Models
+namespace BettingApp.Models
 {
     public class FullTime
     {

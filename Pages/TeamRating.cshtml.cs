@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SimpleApp.Services;
-using SimpleApp.Models;
+using BettingApp.Services;
+using BettingApp.Models;
 
 
-namespace SimpleApp.Pages
+namespace BettingApp.Pages
 {
     public class TeamRatingModel : PageModel
     {

@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using SimpleApp.Models;
+using BettingApp.Models;
 
-namespace SimpleApp.Data
+namespace BettingApp.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
@@ -16,7 +16,7 @@ namespace SimpleApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Om FullTime inte ska vara en databasentitet, gör den keyless
+            // Om FullTime inte ska vara en databasentitet, g�r den keyless
             modelBuilder.Entity<FullTime>().HasNoKey(); 
         }
 

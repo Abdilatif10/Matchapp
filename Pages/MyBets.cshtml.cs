@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SimpleApp.Data;
-using SimpleApp.Models;
-using SimpleApp.Services;
+using BettingApp.Data;
+using BettingApp.Models;
+using BettingApp.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace SimpleApp.Pages
+namespace BettingApp.Pages
 {
     public class MyBetsModel : PageModel
     {
