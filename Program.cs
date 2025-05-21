@@ -10,24 +10,43 @@ namespace BettingApp
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args);            // Add services to the container.
+            builder.Services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
-            // Add services to the container.
-            builder.Services.AddRazorPages();
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            });
 
             // Configure logging
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
-            builder.Logging.SetMinimumLevel(LogLevel.Debug);
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);            builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<User, IdentityRole>()
+            builder.Services.AddDefaultIdentity<User>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
                 .AddDefaultUI();
+
+            builder.Services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
             builder.Services.AddHttpClient<FootballDataService>();
             
