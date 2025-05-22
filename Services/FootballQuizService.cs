@@ -4,32 +4,24 @@ using SimpleApp.Services.Enums;
 namespace SimpleApp.Services
 {    public class FootballQuizService
     {
-        private readonly List<QuizQuestion> _staticQuestions;
+    private readonly List<QuizQuestion> _staticQuestions;
         private readonly FootballDataService _footballDataService;
-        private readonly TriviaService _triviaService;
 
-        public FootballQuizService(FootballDataService footballDataService, TriviaService triviaService)
+        public FootballQuizService(FootballDataService footballDataService)
         {
             _footballDataService = footballDataService;
-            _triviaService = triviaService;
             _staticQuestions = GenerateStaticQuestions();
-        }
-
-        public async Task<List<QuizQuestion>> GetRandomQuestionsAsync(int count = 10)
+        }        public async Task<List<QuizQuestion>> GetRandomQuestionsAsync(int count = 10)
         {
-            var rng = new Random();            var questions = new List<QuizQuestion>();
-            
-            // Get trivia questions
-            var triviaQuestions = await _triviaService.GetTriviaQuestionsAsync(3);
+            var rng = new Random();
             
             // Add dynamic questions based on current standings
             var standings = await _footballDataService.GetPremierLeagueStandingsAsync();
             var dynamicQuestions = GenerateDynamicQuestions(standings);
             
-            // Combine static, dynamic, and trivia questions
+            // Combine static and dynamic questions
             var allQuestions = _staticQuestions
                 .Concat(dynamicQuestions)
-                .Concat(triviaQuestions)
                 .ToList();
             
             return allQuestions.OrderBy(x => rng.Next()).Take(count).ToList();

@@ -1,0 +1,145 @@
+@page
+@model SimpleApp.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">            <div class="profile-image-container">
+                <div class="avatar-section">
+                    <div class="current-avatar profile-image-wrapper">
+                        @if (!string.IsNullOrEmpty(Model.UserProfile.ProfilePicture))
+                        {
+                            <img src="@Model.UserProfile.ProfilePicture" alt="Profile Picture" class="profile-image current" />
+                            <div class="avatar-label">Current Avatar</div>
+                        }
+                        else
+                        {
+                            <img src="~/img/default-avatar.png" alt="Default Profile Picture" class="profile-image current" onerror="this.src='/img/default-avatar.png'" />
+                            <div class="avatar-label">Default Avatar</div>
+                        }
+                    </div>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" class="mt-4" asp-page-handler="UploadPhoto">
+                    <div class="upload-container">
+                        <h4 class="upload-title">Update Your Profile Picture</h4>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="profilePicture" name="profilePicture" accept="image/*">
+                            <label class="custom-file-label" for="profilePicture">
+                                <i class="fas fa-camera"></i>
+                                <span>Choose New Photo</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Upload New Photo
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.UserProfile.ProfilePicture))
+                        {
+                            <button type="submit" class="btn btn-outline-secondary mt-2" asp-page-handler="ResetToDefault">
+                                <i class="fas fa-undo"></i>
+                                Reset to Default
+                            </button>
+                        }
+                    </div>
+                </form>
+
+                <div class="avatar-preview">
+                    <div class="preview-container" id="imagePreview">
+                        <img src="~/img/default-avatar.png" alt="Preview" class="preview-image" />
+                        <div class="preview-label">Preview</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <form method="post" asp-page-handler="UpdateProfile">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Profile Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="UserProfile.FirstName">First Name</label>
+                            <input asp-for="UserProfile.FirstName" class="form-control" />
+                            <span asp-validation-for="UserProfile.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserProfile.LastName">Last Name</label>
+                            <input asp-for="UserProfile.LastName" class="form-control" />
+                            <span asp-validation-for="UserProfile.LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserProfile.Bio">Bio</label>
+                            <textarea asp-for="UserProfile.Bio" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="UserProfile.Bio" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserProfile.FavoriteTeam">Favorite Team</label>
+                            <select asp-for="UserProfile.FavoriteTeam" class="form-control" asp-items="Model.Teams">
+                                <option value="">Select a team</option>
+                            </select>
+                            <span asp-validation-for="UserProfile.FavoriteTeam" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserProfile.DateOfBirth">Date of Birth</label>
+                            <input asp-for="UserProfile.DateOfBirth" class="form-control" type="date" />
+                            <span asp-validation-for="UserProfile.DateOfBirth" class="text-danger"></span>
+                        </div>                        <div class="user-stats">
+                            <p>
+                                <i class="fas fa-star"></i>
+                                <span>Points: @Model.UserProfile.Points</span>
+                            </p>
+                            <p>
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Member since: @Model.UserProfile.DateOfBirth.ToString("MMMM dd, yyyy")</span>
+                            </p>
+                            @if (!string.IsNullOrEmpty(Model.UserProfile.FavoriteTeam))
+                            {
+                                <p>
+                                    <i class="fas fa-futbol"></i>
+                                    <span>Supporting: @Model.UserProfile.FavoriteTeam</span>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Show filename in file input
+            $(".custom-file-input").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html('<i class="fas fa-camera"></i>' + fileName);
+                
+                // Handle image preview
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        $('.preview-image').attr('src', e.target.result);
+                        $('.avatar-preview').fadeIn();
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            // Reset preview when clicking reset button
+            $('button[asp-page-handler="ResetToDefault"]').on('click', function() {
+                $('.preview-image').attr('src', '/img/default-avatar.png');
+            });
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SimpleApp</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SimpleApp.styles.css" asp-append-version="true" />    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SimpleApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dropdown.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -34,9 +35,7 @@
                             </li>                           
                              <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-page="/Standings">Standings</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/FootballQuiz">Quiz</a>
+                            </li>                            <li class="nav-item">                                <a class="nav-link" asp-area="" asp-page="/FootballQuiz">Quiz</a>
                             </li>
                         }
                     </ul>
@@ -55,11 +54,28 @@
         <div class="container">
             &copy; 2024 - SimpleApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    </footer>    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Handle profile picture upload
+            $('#profilePicture').on('change', function() {
+                if (this.files && this.files[0]) {
+                    $('#avatarForm').submit();
+                }
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            $('.profile-dropdown').on('click', function(e) {
+                if ($(e.target).hasClass('dropdown-item') || $(e.target).closest('form').length) {
+                    return;
+                }
+                e.stopPropagation();
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -22,19 +22,23 @@ namespace SimpleApp
             builder.Logging.AddDebug();
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
+            // Configure database and identity
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
-                .AddDefaultUI();            // Add memory cache
-            builder.Services.AddMemoryCache();            builder.Services.AddHttpClient<FootballDataService>();
-            builder.Services.AddHttpClient<TriviaService>();
+                .AddDefaultUI();
+
+            // Replace default SignInManager with custom one
+            builder.Services.AddScoped<SignInManager<User>, CustomSignInManager>();            // Add memory cache and other services
+            builder.Services.AddMemoryCache();
+            builder.Services.AddHttpClient<FootballDataService>();
+
             // Register services with dependency injection
             builder.Services.AddScoped<IFootballDataService, FootballDataService>();
             builder.Services.AddScoped<FootballDataService>();
-            builder.Services.AddScoped<TriviaService>();
             builder.Services.AddScoped<FootballQuizService>();
 
             var app = builder.Build();
@@ -48,11 +52,14 @@ namespace SimpleApp
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Add middleware to check for team selection            app.UseTeamSelection();
 
             app.MapStaticAssets();
             app.MapRazorPages()

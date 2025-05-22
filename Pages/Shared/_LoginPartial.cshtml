@@ -7,7 +7,6 @@
     var firstName = user?.FirstName ?? "User";  
 }
 
-
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
@@ -15,10 +14,56 @@
             <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 @firstName  
             </a>
-            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <ul class="dropdown-menu profile-dropdown" aria-labelledby="userDropdown">
+                <li class="px-4 py-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(user?.ProfilePicture) ? "/img/default-avatar.png" : user.ProfilePicture)" 
+                                 alt="Profile Picture" 
+                                 class="rounded-circle profile-img"
+                                 style="width: 64px; height: 64px; object-fit: cover;">
+                            <label for="profilePicture" class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1 cursor-pointer edit-avatar-btn">
+                                <i class="fas fa-camera text-white" style="font-size: 12px;"></i>
+                            </label>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-1">@user?.FirstName @user?.LastName</h6>
+                            <span class="text-muted small">@user?.Email</span>
+                        </div>
+                    </div>
+                    <form method="post" enctype="multipart/form-data" class="d-none" id="avatarForm" asp-area="Identity" asp-page="/Account/Manage/Index" asp-page-handler="UploadPhoto">
+                        <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="d-none">
+                    </form>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="fas fa-user-cog me-2"></i>
+                        Account Settings
+                    </a>
+                </li>
+                @if (!string.IsNullOrEmpty(user?.FavoriteTeam))
+                {
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center">
+                            <i class="fas fa-futbol me-2"></i>
+                            Supporting: @user.FavoriteTeam
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a class="dropdown-item d-flex align-items-center">
+                        <i class="fas fa-coins me-2"></i>
+                        Points: @(user?.Points ?? 0)
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
                 <li>
                     <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
-                        <button id="logout" type="submit" class="dropdown-item btn btn-link text-dark border-0">Logout</button>
+                        <button id="logout" type="submit" class="dropdown-item d-flex align-items-center text-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Logout
+                        </button>
                     </form>
                 </li>
             </ul>

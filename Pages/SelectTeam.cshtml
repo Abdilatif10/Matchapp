@@ -1,0 +1,89 @@
+@page
+@model SimpleApp.Pages.SelectTeamModel
+@{
+    ViewData["Title"] = "Choose Your Team";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2>Choose Your Team</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="team-grid">
+                            @foreach (var team in Model.Teams)
+                            {
+                                <div class="team-option">
+                                    <input type="radio" 
+                                           name="selectedTeam" 
+                                           value="@team.Name" 
+                                           id="team_@team.Name.Replace(" ", "_")" 
+                                           class="team-radio" 
+                                           required>
+                                    <label for="team_@team.Name.Replace(" ", "_")" class="team-label">
+                                        <img src="@team.Crest"
+                                             alt="@team.Name crest" 
+                                             class="team-crest"
+                                             onerror="this.onerror=null; this.src='/img/default-team-crest.png';">
+                                        <span class="team-name">@team.Name</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">Confirm Selection</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .team-option {
+            text-align: center;
+        }
+
+        .team-radio {
+            display: none;
+        }
+
+        .team-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .team-radio:checked + .team-label {
+            border-color: #38003c;
+            background-color: rgba(56, 0, 60, 0.05);
+        }
+
+        .team-crest {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .team-name {
+            font-weight: 500;
+        }
+    </style>
+}

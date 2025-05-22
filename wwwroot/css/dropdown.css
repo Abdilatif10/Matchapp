@@ -1,0 +1,71 @@
+.profile-dropdown {
+    width: 300px;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.profile-img {
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+}
+
+.edit-avatar-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #fff;
+}
+
+.edit-avatar-btn:hover {
+    transform: scale(1.1);
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: #38003c;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(56, 0, 60, 0.05);
+}
+
+.dropdown-item.text-danger i {
+    color: #dc3545;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    opacity: 0.1;
+}
+
+/* Premier League theme colors */
+.text-premier {
+    color: #38003c;
+}
+
+.bg-premier {
+    background-color: #38003c;
+}
+
+.text-premier-accent {
+    color: #04f5ff;
+}

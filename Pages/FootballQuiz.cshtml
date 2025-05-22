@@ -35,13 +35,7 @@
                     var question = Model.Questions[i];
                     var isCorrect = Model.AnswerResults[i];
                     <div class="result-item @(isCorrect ? "correct" : "incorrect")">
-                        <div class="question-number">Q@(i + 1) • @question.Points pts</div>
-                        @if (question.TeamName != null)
-                        {
-                            <img src="https://crests.football-data.org/@(question.TeamName.ToLower().Replace(" ", "-")).png" 
-                                 alt="@question.TeamName crest" class="team-crest" />
-                        }
-                        <p class="question-text">@question.Question</p>
+                        <div class="question-number">Q@(i + 1) • @question.Points pts</div>                        <p class="question-text">@question.Question</p>
                         <div class="answer-comparison">
                             @if (isCorrect)
                             {
@@ -85,13 +79,9 @@
                     <div class="question-content">
                         <div class="question-header">
                             <h5 class="mb-0">Question @(i + 1) of @Model.Questions.Count</h5>
+                        </div>                        <div class="question-content-wrapper">
+                            <p class="question-text">@question.Question</p>
                         </div>
-                        @if (question.TeamName != null)
-                        {
-                            <img src="https://crests.football-data.org/@(question.TeamName.ToLower().Replace(" ", "-")).png" 
-                                 alt="@question.TeamName crest" class="team-crest" />
-                        }
-                        <p class="question-text">@question.Question</p>
                     </div>
                     <div class="answers-grid">
                         @for (var j = 0; j < question.Options.Count; j++)
