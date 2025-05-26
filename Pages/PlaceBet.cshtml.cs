@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using SimpleApp.Data;
 using SimpleApp.Models;
 using SimpleApp.Services;
+using SimpleApp.Services.Interfaces;
 
 namespace SimpleApp.Pages
 {    
     public class PlaceBetModel : PageModel
     {
-        private readonly FootballDataService _footballDataService;
+        private readonly IFootballDataService _footballDataService;
         private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _dbContext;
         public Match? SelectedMatch { get; set; }
@@ -20,7 +21,7 @@ namespace SimpleApp.Pages
         [BindProperty(SupportsGet = true)]
         public string? Datetime { get; set; }
 
-        public PlaceBetModel(FootballDataService footballDataService, UserManager<User> userManager, ApplicationDbContext dbContext)
+        public PlaceBetModel(IFootballDataService footballDataService, UserManager<User> userManager, ApplicationDbContext dbContext)
         {
             _footballDataService = footballDataService;
             _userManager = userManager;
@@ -79,11 +80,9 @@ namespace SimpleApp.Pages
             {
                 TempData["Error"] = "Matchen kunde inte hittas.";
                 return RedirectToPage("/Index");
-            }
-
-            if (betAmount > user.Points)
+            }            if (user == null || user.Points == null || betAmount > user.Points)
             {
-                TempData["Error"] = "Du har inte tillr�ckligt med po�ng.";
+                TempData["Error"] = "Du har inte tillräckligt med poäng.";
                 return RedirectToPage("/MyBets");
             }
 
@@ -91,9 +90,12 @@ namespace SimpleApp.Pages
             {
                 TempData["Error"] = "Du kan inte l�gga bet p� en redan spelad match.";
                 return RedirectToPage("/Index");
+            }            if (SelectedMatch?.HomeTeam == null || SelectedMatch?.AwayTeam == null)
+            {
+                TempData["Error"] = "Felaktig matchdata.";
+                return RedirectToPage("/MyBets");
             }
 
-       
             var odds = CalculateOdds(SelectedMatch.HomeTeam, SelectedMatch.AwayTeam);
 
             
