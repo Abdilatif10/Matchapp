@@ -31,12 +31,12 @@ namespace SimpleApp
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
-            // Replace default SignInManager with custom one
-            builder.Services.AddScoped<SignInManager<User>, CustomSignInManager>();            // Add memory cache and other services
+            
+            builder.Services.AddScoped<SignInManager<User>, CustomSignInManager>();            
             builder.Services.AddMemoryCache();
             builder.Services.AddHttpClient<FootballDataService>();
 
-            // Register services with dependency injection
+            
             builder.Services.AddScoped<IFootballDataService, FootballDataService>();
             builder.Services.AddScoped<FootballDataService>();
             builder.Services.AddScoped<FootballQuizService>();
@@ -59,7 +59,7 @@ namespace SimpleApp
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Add middleware to check for team selection            app.UseTeamSelection();
+       
 
             app.MapStaticAssets();
             app.MapRazorPages()
