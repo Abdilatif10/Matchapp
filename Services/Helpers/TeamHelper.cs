@@ -45,7 +45,7 @@ namespace SimpleApp.Services.Helpers
             return GetTeamRating(teamName) != TeamRating.Unknown;
         }
 
-        // Helper method to create a team with ratings
+       
         public static Team CreateTeamWithRating(string name, string crest = "")
         {
             return new Team

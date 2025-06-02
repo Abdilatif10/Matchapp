@@ -15,11 +15,11 @@ namespace SimpleApp.Services
         {
             var rng = new Random();
             
-            // Add dynamic questions based on current standings
+          
             var standings = await _footballDataService.GetPremierLeagueStandingsAsync();
             var dynamicQuestions = GenerateDynamicQuestions(standings);
             
-            // Combine static and dynamic questions
+           
             var allQuestions = _staticQuestions
                 .Concat(dynamicQuestions)
                 .ToList();
@@ -33,7 +33,7 @@ namespace SimpleApp.Services
             
             if (standings.Any())
             {
-                // Add question about current league leader
+               
                 var leader = standings.First();
                 questions.Add(new QuizQuestion
                 {
@@ -46,7 +46,7 @@ namespace SimpleApp.Services
                     Explanation = $"{leader.Team?.Name} is currently leading with {leader.Points} points after {leader.PlayedGames} games."
                 });
 
-                // Add question about goals
+            
                 var topScorer = standings.OrderByDescending(s => s.GoalsFor).First();
                 var scorerOptions = standings.OrderByDescending(s => s.GoalsFor).Take(4)
                     .Select(s => s.Team?.Name ?? "Unknown").ToList();
@@ -61,7 +61,7 @@ namespace SimpleApp.Services
                     Explanation = $"{topScorer.Team?.Name} has scored {topScorer.GoalsFor} goals this season."
                 });
 
-                // Add question about best defense
+             
                 var bestDefense = standings.OrderBy(s => s.GoalsAgainst).First();
                 var defenseOptions = standings.OrderBy(s => s.GoalsAgainst).Take(4)
                     .Select(s => s.Team?.Name ?? "Unknown").ToList();
@@ -76,7 +76,7 @@ namespace SimpleApp.Services
                     Explanation = $"{bestDefense.Team?.Name} has only conceded {bestDefense.GoalsAgainst} goals this season."
                 });
 
-                // Add question about wins
+         
                 var mostWins = standings.OrderByDescending(s => s.Won).First();
                 var winsOptions = standings.OrderByDescending(s => s.Won).Take(4)
                     .Select(s => s.Team?.Name ?? "Unknown").ToList();

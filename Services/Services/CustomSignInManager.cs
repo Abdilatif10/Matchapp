@@ -15,10 +15,12 @@ namespace SimpleApp.Services
             Microsoft.AspNetCore.Identity.IUserConfirmation<User> confirmation)
             : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
         {
-        }        public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
+            
+        } 
+               public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
         {
             var result = await base.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
-              if (result.Succeeded)
+            if (result.Succeeded)
             {
                 var user = await UserManager.FindByNameAsync(userName);
                 if (user != null && string.IsNullOrEmpty(user.FavoriteTeam))
@@ -26,7 +28,7 @@ namespace SimpleApp.Services
                     Context.Response.Cookies.Append("RequireTeamSelection", "true");
                 }
             }
-            
+
             return result;
         }
     }
