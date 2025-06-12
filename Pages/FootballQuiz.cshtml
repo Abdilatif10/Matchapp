@@ -10,8 +10,8 @@
 
 <div class="quiz-container">
     <div class="quiz-header">
-        <h2>Premier League Football Quiz</h2>
-        <p class="lead">Test your knowledge about Premier League teams and earn points!</p>
+        <h2>Premier League Football Frågor</h2>
+        <p class="lead">teams-container Din Kunskap Om Football onchange Tjäna Poäng</nav>!</p>
     </div>
 
     <div class="points-display">
@@ -35,7 +35,8 @@
                     var question = Model.Questions[i];
                     var isCorrect = Model.AnswerResults[i];
                     <div class="result-item @(isCorrect ? "correct" : "incorrect")">
-                        <div class="question-number">Q@(i + 1) • @question.Points pts</div>                        <p class="question-text">@question.Question</p>
+                        <div class="question-number">Q@(i + 1) • @question.Points pts</div>  
+                      <p class="question-text">@question.Question</p>
                         <div class="answer-comparison">
                             @if (isCorrect)
                             {

@@ -1,4 +1,3 @@
-/* Main Stylesheet */
 @import 'shared/variables.css';
 @import 'shared/layout.css';
 @import 'shared/header-footer.css';
@@ -7,7 +6,7 @@
 @import 'components/leaderboard.css';
 @import 'pages/index.css';
 
-/* Global Styles */
+
 html {
   font-size: 14px;
   position: relative;
@@ -383,4 +382,15 @@ body {
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 5px;
+}
+
+/* Navbar Brand Football Icon */
+.navbar-brand .fa-futbol {
+    color: #37003c;
+    font-size: 1.8rem;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover .fa-futbol {
+    transform: rotate(360deg);
 }

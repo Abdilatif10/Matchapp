@@ -31,20 +31,20 @@ namespace SimpleApp.Pages
             {
                 _logger.LogInformation("[DEBUG] Starting OnGetAsync with SearchTerm: {SearchTerm}", SearchTerm);
 
-                // Handle datetime parameter
+               
                 var datetimeParam = HttpContext.Request.Query["datetime"].ToString();
                 if (!string.IsNullOrEmpty(datetimeParam) && DateTime.TryParse(datetimeParam, out var parsedDate))
                 {
                     UtcDate = parsedDate;
                 }
 
-                // Get teams with search
+              
                 var allTeams = await _footballDataService.GetPremierLeagueTeamsAsync();
                 Teams = string.IsNullOrWhiteSpace(SearchTerm)
                     ? allTeams
                     : allTeams.Where(t => t.Name?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
 
-                _logger.LogInformation("[DEBUG] Found {Count} matching teams", Teams.Count);                // Get matches for the next 30 days from selected date
+                _logger.LogInformation("[DEBUG] Found {Count} matching teams", Teams.Count);              
                 string dateFrom = UtcDate.ToString("yyyy-MM-dd");
                 string dateTo = UtcDate.AddDays(30).ToString("yyyy-MM-dd");
                 _logger.LogInformation("[DEBUG] Date range: {DateFrom} to {DateTo}", dateFrom, dateTo);
@@ -54,18 +54,18 @@ namespace SimpleApp.Pages
                 
                 _logger.LogInformation("[DEBUG] Total matches from API: {Count}", allMatches.Count);
 
-                // Filter matches by searched team
+             
                 if (!string.IsNullOrWhiteSpace(SearchTerm))
                 {
                     _logger.LogInformation("[DEBUG] Filtering matches for team: {SearchTerm}", SearchTerm);
                     
-                    // Try exact match first
+                   
                     Matches = allMatches.Where(m =>
                         (m.HomeTeam?.Name?.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
                         (m.AwayTeam?.Name?.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
                     ).ToList();
 
-                    // If no exact matches, try contains
+                   
                     if (!Matches.Any())
                     {
                         _logger.LogInformation("[DEBUG] No exact matches found, trying partial matches");
@@ -88,7 +88,7 @@ namespace SimpleApp.Pages
                     _logger.LogInformation("[DEBUG] No search term, showing {Count} recent matches", Matches.Count);
                 }
 
-                // Convert times and calculate odds
+             
                 foreach (var match in Matches)
                 {
                     try

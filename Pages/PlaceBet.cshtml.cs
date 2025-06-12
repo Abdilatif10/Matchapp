@@ -48,18 +48,18 @@ namespace SimpleApp.Pages
 
             SelectedMatch = match;
             
-            // Convert UTC time to local time
+          
             var timezone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
             SelectedMatch.UtcDate = TimeZoneInfo.ConvertTimeFromUtc(SelectedMatch.UtcDate, timezone);
 
-            // Check if match has already started
+            
             if (SelectedMatch.UtcDate <= DateTime.Now)
             {
                 TempData["Error"] = "Cannot place bets on matches that have already started.";
                 return RedirectToPage("/Index");
             }
 
-            // Get current user
+           
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -80,7 +80,8 @@ namespace SimpleApp.Pages
             {
                 TempData["Error"] = "Matchen kunde inte hittas.";
                 return RedirectToPage("/Index");
-            }            if (user == null || user.Points == null || betAmount > user.Points)
+            } 
+             if (user == null || user.Points == null || betAmount > user.Points)
             {
                 TempData["Error"] = "Du har inte tillräckligt med poäng.";
                 return RedirectToPage("/MyBets");
@@ -88,7 +89,7 @@ namespace SimpleApp.Pages
 
             if (SelectedMatch?.UtcDate <= DateTime.UtcNow)
             {
-                TempData["Error"] = "Du kan inte l�gga bet p� en redan spelad match.";
+                TempData["Error"] = "Du kan inte lägga bet på en redan spelad match.";
                 return RedirectToPage("/Index");
             }            if (SelectedMatch?.HomeTeam == null || SelectedMatch?.AwayTeam == null)
             {
@@ -139,7 +140,7 @@ namespace SimpleApp.Pages
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
 
-            TempData["Success"] = "Ditt bet �r lagt!";
+            TempData["Success"] = "Ditt bet är lagt!";
             return RedirectToPage("/MyBets");
         }
 

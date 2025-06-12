@@ -118,12 +118,12 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Show filename in file input
+            
             $(".custom-file-input").on("change", function () {
                 var fileName = $(this).val().split("\\").pop();
                 $(this).siblings(".custom-file-label").addClass("selected").html('<i class="fas fa-camera"></i>' + fileName);
                 
-                // Handle image preview
+               
                 if (this.files && this.files[0]) {
                     var reader = new FileReader();
                     
@@ -136,7 +136,7 @@
                 }
             });
 
-            // Reset preview when clicking reset button
+            
             $('button[asp-page-handler="ResetToDefault"]').on('click', function() {
                 $('.preview-image').attr('src', '/img/default-avatar.png');
             });

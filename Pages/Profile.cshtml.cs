@@ -94,7 +94,7 @@ namespace SimpleApp.Pages
                 return NotFound();
             }
 
-            // Validate file type
+            
             var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
             if (!allowedTypes.Contains(profilePicture.ContentType.ToLower()))
             {
@@ -103,11 +103,11 @@ namespace SimpleApp.Pages
                 return Page();
             }
 
-            // Create uploads directory if it doesn't exist
+           
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "profiles");
             Directory.CreateDirectory(uploadsFolder);
 
-            // Delete old profile picture if it exists
+         
             if (!string.IsNullOrEmpty(user.ProfilePicture))
             {
                 var oldFilePath = Path.Combine(_environment.WebRootPath, user.ProfilePicture.TrimStart('/'));
@@ -117,17 +117,17 @@ namespace SimpleApp.Pages
                 }
             }
 
-            // Generate unique filename
+         
             var fileName = $"{user.Id}_{DateTime.UtcNow.Ticks}{Path.GetExtension(profilePicture.FileName)}";
             var filePath = Path.Combine(uploadsFolder, fileName);
 
-            // Save the file
+
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await profilePicture.CopyToAsync(fileStream);
             }
 
-            // Update user profile picture path
+          
             user.ProfilePicture = $"/uploads/profiles/{fileName}";
             user.LastUpdated = DateTime.UtcNow;
 
@@ -155,7 +155,7 @@ namespace SimpleApp.Pages
                 return NotFound();
             }
 
-            // Delete the existing profile picture file if it exists
+         
             if (!string.IsNullOrEmpty(user.ProfilePicture))
             {
                 var oldFilePath = Path.Combine(_environment.WebRootPath, user.ProfilePicture.TrimStart('/'));
@@ -165,7 +165,7 @@ namespace SimpleApp.Pages
                 }
             }
 
-            // Reset the profile picture to null to use default
+           
             user.ProfilePicture = null;
             user.LastUpdated = DateTime.UtcNow;
 

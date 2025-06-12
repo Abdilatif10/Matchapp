@@ -1,4 +1,4 @@
-/* Quiz Container and Header */
+
 .quiz-container {
     max-width: 600px;
     margin: 0 auto;
@@ -150,7 +150,7 @@
     line-height: 1.5;
 }
 
-/* Answer Grid Layout */
+
 .answers-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -232,7 +232,7 @@
     transform: translateY(1px);
 }
 
-/* Results Styling */
+
 .result-card {
     background: linear-gradient(135deg, #38003c 0%, #2c0030 100%);
     border-radius: 15px;
@@ -339,7 +339,7 @@
     border-left: 2px solid #04f5ff;
 }
 
-/* Quiz Actions */
+
 .quiz-actions {
     display: flex;
     justify-content: center;
@@ -369,7 +369,7 @@
     color: white;
 }
 
-/* Navigation */
+
 .quiz-navigation {
     display: flex;
     justify-content: space-between;
@@ -435,7 +435,7 @@
     transition: width 0.3s ease;
 }
 
-/* Media Queries for Responsiveness */
+
 @media (max-width: 768px) {
     .quiz-container {
         padding: 10px;

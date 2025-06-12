@@ -17,7 +17,7 @@ namespace SimpleApp.Services
         {
             
         } 
-               public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
+         public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
         {
             var result = await base.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
             if (result.Succeeded)
