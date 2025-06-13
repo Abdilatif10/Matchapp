@@ -17,8 +17,8 @@ namespace SimpleApp.Middleware
             if (context.User.Identity.IsAuthenticated)
             {
                 var path = context.Request.Path.Value?.ToLower();
-                
-                // Skip middleware for these paths
+
+                // Skippar middleware för dessa vägar
                 if (path != "/selectteam" && 
                     !path.StartsWith("/identity/") && 
                     !path.Contains("signout") && 
